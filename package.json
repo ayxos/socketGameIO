@@ -1,8 +1,9 @@
 {
-  "name": "socket-chat-example",
+  "name": "socket-game",
   "version": "0.0.1",
-  "description": "my first socket.io app",
+  "description": "my first socket.io game",
   "dependencies": {
+    "color-util-logs": "0.0.1",
     "express": "4.10.2",
     "socket.io": "1.2.0"
   }
