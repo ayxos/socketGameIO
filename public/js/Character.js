@@ -14,7 +14,6 @@
 // limitations under the License.
 
 var canvas;
-var context;
 var images = {};
 var totalResources = 6;
 var numResourcesLoaded = 0;
@@ -35,84 +34,74 @@ var blinkTimer = setInterval(updateBlink, blinkUpdateTime);
 var numFramesDrawn = 0;
 var curFPS = 0;
 
-function preparePlayer(ctx){
-	console.log('preparePlayer', ctx);
-	context = ctx; // Grab the 2d canvas context
-	// Note: The above code is a workaround for IE 8and lower. Otherwise we could have used:
-	//     context = document.getElementById('canvas').getContext("2d");
+function preparePlayer(isZombie){
 	
-	loadImage("leftArm");
-	loadImage("legs");
-	loadImage("torso");
-	loadImage("rightArm");
-	loadImage("head");
-	loadImage("hair");
+	if(!isZombie){
+		loadImage("leftArm");
+		loadImage("legs");
+		loadImage("torso");
+		loadImage("rightArm");
+		loadImage("head");
+		loadImage("hair");
+	} else {
+		loadImage("zombie-leftArm");
+		loadImage("zombie-legs");
+		loadImage("zombie-torso");
+		loadImage("zombie-rightArm");
+		loadImage("zombie-head");
+		loadImage("zombie-hair");
+	}
 }
 
 function loadImage(name) {
-
   images[name] = new Image();
-  images[name].onload = function() { 
-	  resourceLoaded();
-  }
   images[name].src = "images/" + name + ".png";
 }
 
-function resourceLoaded() {
-
-  numResourcesLoaded += 1;
-  if(numResourcesLoaded === totalResources) {
-  
-	showCharacter();
-  }
-}
-
-function showCharacter(){
+function showCharacter(ctx, Cx, Cy, isZombie){
 	console.log('showCharacter');
-	context.drawImage(images["leftArm"], x + 40, y - 42 - breathAmt);
-	context.drawImage(images["legs"], x, y);
-	context.drawImage(images["torso"], x, y - 50);
-	context.drawImage(images["head"], x - 10, y - 125 - breathAmt);
-	context.drawImage(images["hair"], x - 37, y - 138 - breathAmt);
-	context.drawImage(images["rightArm"], x - 15, y - 42 - breathAmt);
+
+	drawEllipse(ctx, Cx + 40, Cy + 29, 160 - breathAmt, 6); // Shadow
+
+	if(!isZombie){
+		ctx.drawImage(images["leftArm"], Cx + 40, Cy - 42 - breathAmt);
+		ctx.drawImage(images["legs"], Cx, Cy);
+		ctx.drawImage(images["torso"], Cx, Cy - 50);
+		ctx.drawImage(images["head"], Cx - 10, Cy - 125 - breathAmt);
+		ctx.drawImage(images["hair"], Cx - 37, Cy - 138 - breathAmt);
+		ctx.drawImage(images["rightArm"], Cx - 15, Cy - 42 - breathAmt);
+	} else {
+		ctx.drawImage(images["zombie-leftArm"], Cx + 40, Cy - 42 - breathAmt);
+		ctx.drawImage(images["zombie-legs"], Cx, Cy);
+		ctx.drawImage(images["zombie-torso"], Cx, Cy - 50);
+		ctx.drawImage(images["zombie-head"], Cx - 10, Cy - 125 - breathAmt);
+		ctx.drawImage(images["zombie-hair"], Cx - 37, Cy - 138 - breathAmt);
+		ctx.drawImage(images["zombie-rightArm"], Cx - 15, Cy - 42 - breathAmt);
+	}
+
+	drawEllipse(ctx, Cx + 47, Cy - 68 - breathAmt, 8, curEyeHeight); // Left Eye
+	drawEllipse(ctx, Cx + 58, Cy - 68 - breathAmt, 8, curEyeHeight); // Right Eye
 }
 
-function redraw() {
-				
-  canvas.width = canvas.width; // clears the canvas 
+function drawEllipse(ctx, centerX, centerY, width, height) {
 
-  drawEllipse(x + 40, y + 29, 160 - breathAmt, 6); // Shadow
-
-  context.drawImage(images["leftArm"], x + 40, y - 42 - breathAmt);
-  context.drawImage(images["legs"], x, y);
-  context.drawImage(images["torso"], x, y - 50);
-  context.drawImage(images["head"], x - 10, y - 125 - breathAmt);
-  context.drawImage(images["hair"], x - 37, y - 138 - breathAmt);
-  context.drawImage(images["rightArm"], x - 15, y - 42 - breathAmt);
-	
-  drawEllipse(x + 47, y - 68 - breathAmt, 8, curEyeHeight); // Left Eye
-  drawEllipse(x + 58, y - 68 - breathAmt, 8, curEyeHeight); // Right Eye
-}
-
-function drawEllipse(centerX, centerY, width, height) {
-
-  context.beginPath();
+  ctx.beginPath();
   
-  context.moveTo(centerX, centerY - height/2);
+  ctx.moveTo(centerX, centerY - height/2);
   
-  context.bezierCurveTo(
+  ctx.bezierCurveTo(
 	centerX + width/2, centerY - height/2,
 	centerX + width/2, centerY + height/2,
 	centerX, centerY + height/2);
 
-  context.bezierCurveTo(
+  ctx.bezierCurveTo(
 	centerX - width/2, centerY + height/2,
 	centerX - width/2, centerY - height/2,
 	centerX, centerY - height/2);
  
-  context.fillStyle = "black";
-  context.fill();
-  context.closePath();	
+  ctx.fillStyle = "black";
+  ctx.fill();
+  ctx.closePath();	
 }
 
 function updateBreath() { 

@@ -2,12 +2,18 @@
 ** GAME PLAYER CLASS
 **************************************************/
 var Player = function(startX, startY) {
-	var id, 
+	var id,
 		x 				= startX,
 		y 				= startY,
 		moveAmount 		= 2,
 		colorsArray 	= ['red', 'green', 'blue', 'orange', 'yellow'],
-		playerColor 	= colorsArray[Math.floor(Math.random() * colorsArray.length)];
+		playerColor 	= colorsArray[Math.floor(Math.random() * colorsArray.length)],
+		zombi			= [true, false],
+		isZombii		= zombi[Math.floor(Math.random() * zombi.length)];
+
+	var prepareImg = function() {
+		preparePlayer(isZombii);
+	}();
 	
 	// Getters and setters
 	var getX = function() {
@@ -55,10 +61,8 @@ var Player = function(startX, startY) {
 
 	// Draw player
 	var draw = function(ctx) {
-		ctx.fillStyle = playerColor;
-		ctx.fillRect(x-5, y-5, 10, 10);
-		// not ready yet
-		// preparePlayer(ctx);
+		console.log('draw');
+		showCharacter(ctx, x, y, isZombii);
 	};
 
 	// Define which variables and methods can be accessed
