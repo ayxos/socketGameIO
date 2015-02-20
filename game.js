@@ -18,6 +18,7 @@ app.use(express.static(__dirname + '/public'));
 var socket,		// Socket controller
 	players;	// Array of connected players
 
+var random = [1, -1];
 
 /**************************************************
 ** GAME INITIALISATION
@@ -26,11 +27,18 @@ function init() {
 	// Create an empty array to store players
 	players = [];
 
+	// init zombie
+	initZombie();
+
 	// Set up Socket.IO to listen on port 8000
 	socket = io.listen(8000);
 
 	// Start listening for events
 	setEventHandlers();
+
+	// setInterval(function(){
+	// 	moveZombie()
+	// }, 10);
 };
 
 
@@ -42,8 +50,44 @@ var setEventHandlers = function() {
 	io.on('connection', onSocketConnection);
 };
 
+var initZombie = function(){
+	//init zombie
+	var newPlayer = new Player(Math.round(Math.random()*(1024-5)), Math.round(Math.random()*(768-5)), true);
+	newPlayer.id = 1;
+	// Add new player to the players array
+	players.push(newPlayer);
+}; 
+
+var moveZombie = function(){
+	// console.log('movie xom');
+	var movePlayer = playerById(1);
+	// Update player position
+
+	var checkLimit = function(value, limit, callback){
+		var newValue = value() + Math.floor(Math.random() * random.length);
+		if(newValue > limit - 1){
+			checkLimit(value, limit, callback);
+		}
+		else {
+			callback(newValue);
+		}
+	};
+
+	checkLimit(movePlayer.getX, 1024, movePlayer.setX);
+	checkLimit(movePlayer.getY, 1024, movePlayer.setY);
+
+	io.emit("move player", {
+		id: movePlayer.id, 
+		x: movePlayer.getX(), 
+		y: movePlayer.getY(),
+		isZombie: movePlayer.getZombie()
+	});
+}; 
+
 // New socket connection
 function onSocketConnection(client) {
+	currentSocket = this;
+
 	log.notice("New player has connected: " + client.id);
 
 	// Listen for client disconnected
@@ -72,13 +116,15 @@ function onClientDisconnect() {
 	players.splice(players.indexOf(removePlayer), 1);
 
 	// Broadcast removed player to connected socket clients
-	this.broadcast.emit("remove player", {id: this.id});
+	io.emit("remove player", {id: this.id});
 };
 
 // New player has joined
 function onNewPlayer(data) {
+	// console.log('data', data);
+	// console.log('players', players);
 	// Create a new player
-	var newPlayer = new Player(data.x, data.y, data.color);
+	var newPlayer = new Player(data.x, data.y, data.isZombie);
 	newPlayer.id = this.id;
 
 	// Broadcast new player to connected socket clients
@@ -86,7 +132,7 @@ function onNewPlayer(data) {
 		id: 	newPlayer.id, 
 		x: 		newPlayer.getX(), 
 		y: 		newPlayer.getY(),
-		color: 	newPlayer.getColor()
+		isZombie: 	newPlayer.getZombie()
 	});
 
 	// Send existing players to the new player
@@ -97,7 +143,7 @@ function onNewPlayer(data) {
 			id: 	existingPlayer.id, 
 			x: 		existingPlayer.getX(), 
 			y: 		existingPlayer.getY(),
-			color: 	existingPlayer.getColor()
+			isZombie: 	existingPlayer.getZombie()
 		});
 	};
 		
@@ -114,17 +160,32 @@ function onMovePlayer(data) {
 	if (!movePlayer) {
 		log.warn("Player not found: " + this.id);
 		return;
-	};
+	}
+
+	// check collision
+	zombiePlayer = playerById(1);
+	var zombie = data.isZombie;
+	// console.log('data', data.x);
+	// console.log('zombi', zombiePlayer.getX());
+	if( (data.x < zombiePlayer.getX() + 50) &&  (data.x > zombiePlayer.getX() - 50) ){
+		// console.log('peligro');
+		if( (data.y < zombiePlayer.getY() + 50) &&  (data.y > zombiePlayer.getY() - 50) ){
+			console.log('is zombie');
+			zombie = true;
+		}
+	}
 
 	// Update player position
 	movePlayer.setX(data.x);
 	movePlayer.setY(data.y);
+	movePlayer.setZombie(zombie);
 
-	// Broadcast updated position to connected socket clients, i dont need color, attach to id
+	// Broadcast updated position to connected socket clients, attach to id
 	this.broadcast.emit("move player", {
 		id: movePlayer.id, 
 		x: movePlayer.getX(), 
-		y: movePlayer.getY()
+		y: movePlayer.getY(),
+		isZombie: movePlayer.getZombie()
 	});
 };
 

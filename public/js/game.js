@@ -1,4 +1,4 @@
-var myDomain = "http://192.168.192.248:3000/";
+var myDomain = "http://192.168.0.248:3000/";
 /**************************************************
 ** GAME VARIABLES
 **************************************************/
@@ -101,7 +101,7 @@ function onSocketConnected() {
 	socket.emit("new player", {
 		x: localPlayer.getX(), 
 		y: localPlayer.getY(),
-		color: localPlayer.getColor()
+		isZombie: localPlayer.getZombie()
 	});
 };
 
@@ -115,7 +115,7 @@ function onNewPlayer(data) {
 	console.log("New player connected:", data.id);
 
 	// Initialise the new player
-	var newPlayer = new Player(data.x, data.y);
+	var newPlayer = new Player(data.x, data.y, data.isZombie);
 	newPlayer.id = data.id;
 
 	// Add new player to the remote players array
@@ -135,6 +135,7 @@ function onMovePlayer(data) {
 	// Update player position
 	movePlayer.setX(data.x);
 	movePlayer.setY(data.y);
+	movePlayer.setZombie(data.isZombie);
 };
 
 // Remove player
@@ -171,7 +172,11 @@ function update() {
 	// Update local player and check for change
 	if (localPlayer.update(keys)) {
 		// Send local player data to the game server
-		socket.emit("move player", {x: localPlayer.getX(), y: localPlayer.getY()});
+		socket.emit("move player", {
+			x: localPlayer.getX(), 
+			y: localPlayer.getY(),
+			isZombie: localPlayer.getZombie()
+		});
 	};
 };
 
@@ -184,7 +189,7 @@ function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 	//life setters
-	ctx.fillStyle = 'black';
+	ctx.fillStyle = 'white';
 	ctx.font = "20px Georgia";
 	ctx.fillText("Players: " + (remotePlayers.length + 1),10,50);
 

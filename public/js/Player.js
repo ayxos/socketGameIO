@@ -1,18 +1,15 @@
 /**************************************************
 ** GAME PLAYER CLASS
 **************************************************/
-var Player = function(startX, startY) {
+var Player = function(startX, startY, isZombie) {
 	var id,
 		x 				= startX,
 		y 				= startY,
 		moveAmount 		= 2,
-		colorsArray 	= ['red', 'green', 'blue', 'orange', 'yellow'],
-		playerColor 	= colorsArray[Math.floor(Math.random() * colorsArray.length)],
-		zombi			= [true, false],
-		isZombii		= zombi[Math.floor(Math.random() * zombi.length)];
+		zombie			= isZombie ? true : false;
 
 	var prepareImg = function() {
-		preparePlayer(isZombii);
+		preparePlayer(zombie);
 	}();
 	
 	// Getters and setters
@@ -32,8 +29,12 @@ var Player = function(startX, startY) {
 		y = newY;
 	};
 
-	var getColor = function() {
-		return playerColor;
+	var getZombie = function() {
+		return zombie;
+	};
+
+	var setZombie = function(isZombie) {
+		zombie = isZombie;
 	};
 
 	// Update player position
@@ -61,18 +62,19 @@ var Player = function(startX, startY) {
 
 	// Draw player
 	var draw = function(ctx) {
-		console.log('draw');
-		showCharacter(ctx, x, y, isZombii);
+		// console.log('draw');
+		showCharacter(ctx, x, y, getZombie());
 	};
 
 	// Define which variables and methods can be accessed
 	return {
-		getX: 	getX,
-		getY: 	getY,
-		setX: 	setX,
-		setY: 	setY,
-		update: update,
-		draw: 	draw,
-		getColor:  getColor
+		getX: 		getX,
+		getY: 		getY,
+		setX: 		setX,
+		setY: 		setY,
+		update: 	update,
+		draw: 		draw,
+		getZombie: 	getZombie,
+		setZombie: 	setZombie
 	}
 };

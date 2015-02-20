@@ -34,23 +34,23 @@ var blinkTimer = setInterval(updateBlink, blinkUpdateTime);
 var numFramesDrawn = 0;
 var curFPS = 0;
 
-function preparePlayer(isZombie){
+function preparePlayer(){
 	
-	if(!isZombie){
-		loadImage("leftArm");
-		loadImage("legs");
-		loadImage("torso");
-		loadImage("rightArm");
-		loadImage("head");
-		loadImage("hair");
-	} else {
-		loadImage("zombie-leftArm");
-		loadImage("zombie-legs");
-		loadImage("zombie-torso");
-		loadImage("zombie-rightArm");
-		loadImage("zombie-head");
-		loadImage("zombie-hair");
-	}
+	// not zombie
+	loadImage("leftArm");
+	loadImage("legs");
+	loadImage("torso");
+	loadImage("rightArm");
+	loadImage("head");
+	loadImage("hair");
+
+	// zombie
+	loadImage("zombie-leftArm");
+	loadImage("zombie-legs");
+	loadImage("zombie-torso");
+	loadImage("zombie-rightArm");
+	loadImage("zombie-head");
+	loadImage("zombie-hair");
 }
 
 function loadImage(name) {
@@ -59,7 +59,7 @@ function loadImage(name) {
 }
 
 function showCharacter(ctx, Cx, Cy, isZombie){
-	console.log('showCharacter');
+	// console.log('showCharacter');
 
 	drawEllipse(ctx, Cx + 40, Cy + 29, 160 - breathAmt, 6); // Shadow
 

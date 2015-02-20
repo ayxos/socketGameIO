@@ -4,5 +4,8 @@ body {
 
 canvas {
 	display: block;
-	background: aliceblue;
+	background: url('./../images/forest.png');
+	background-attachment: fixed;
+	background-size: cover;
+	background-repeat: no-repeat;
 }
