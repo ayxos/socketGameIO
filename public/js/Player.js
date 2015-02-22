@@ -5,7 +5,8 @@ var Player = function(startX, startY, isZombie) {
 	var id,
 		x 				= startX,
 		y 				= startY,
-		moveAmount 		= 2,
+		moveAmount 		= 4, // speed!
+		isRight			= true,
 		zombie			= isZombie ? true : false;
 
 	var prepareImg = function() {
@@ -33,8 +34,8 @@ var Player = function(startX, startY, isZombie) {
 		return zombie;
 	};
 
-	var setZombie = function(isZombie) {
-		zombie = isZombie;
+	var setZombie = function(zombi) {
+		zombie = zombi;
 	};
 
 	// Update player position
@@ -52,12 +53,20 @@ var Player = function(startX, startY, isZombie) {
 
 		// Left key takes priority over right
 		if (keys.left) {
+			isRight = false;
 			x -= moveAmount;
 		} else if (keys.right) {
+			isRight = true;
 			x += moveAmount;
 		};
 
+		if(x > window.innerWidth || y > window.innerHeight){
+			x = prevX;
+			y = prevY;
+		} 
+			
 		return (prevX != x || prevY != y) ? true : false;
+		
 	};
 
 	// Draw player

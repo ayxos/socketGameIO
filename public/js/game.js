@@ -1,4 +1,4 @@
-var myDomain = "http://192.168.0.248:3000/";
+var myDomain = "http://192.168.0.250:3000/";
 /**************************************************
 ** GAME VARIABLES
 **************************************************/
@@ -19,6 +19,8 @@ function init() {
 	ctx = canvas.getContext("2d");
 
 	// Maximise the canvas
+	// canvas.width = 1024;
+	// canvas.height = 768;
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
 
@@ -135,7 +137,9 @@ function onMovePlayer(data) {
 	// Update player position
 	movePlayer.setX(data.x);
 	movePlayer.setY(data.y);
+	// update zombie checker
 	movePlayer.setZombie(data.isZombie);
+
 };
 
 // Remove player
@@ -171,6 +175,8 @@ function animate() {
 function update() {
 	// Update local player and check for change
 	if (localPlayer.update(keys)) {
+
+		checkIfZombie(localPlayer, localPlayer.getX, localPlayer.getY);
 		// Send local player data to the game server
 		socket.emit("move player", {
 			x: localPlayer.getX(), 
@@ -178,6 +184,23 @@ function update() {
 			isZombie: localPlayer.getZombie()
 		});
 	};
+};
+
+function checkIfZombie(player, Fx, Fy) {
+	// check collision
+	var zombie = player.getZombie();
+	// get zombie list
+	var zombieList = getZombiesList();
+	for(var i = 0; i < zombieList.length ; i++){
+		if( (Fx() < zombieList[i].getX() + 50) &&  (Fx() > zombieList[i].getX() - 50) ){
+			// console.log('peligro');
+			if( (Fy() < zombieList[i].getY() + 50) &&  (Fy() > zombieList[i].getY() - 50) ){
+				// console.log('is zombie');
+				zombie = true;
+				player.setZombie(true);
+			}
+		}
+	}
 };
 
 
@@ -216,4 +239,16 @@ function playerById(id) {
 	};
 	
 	return false;
+};
+
+// Return Zombies
+function getZombiesList() {
+	var i;
+	var result = [];
+	for (i = 0; i < remotePlayers.length; i++) {
+		if (remotePlayers[i].getZombie() == true)
+			result.push(remotePlayers[i]);
+	};
+	
+	return result;
 };

@@ -2,10 +2,10 @@
 ** GAME PLAYER CLASS
 **************************************************/
 var Player = function(startX, startY, isZombie) {
-	var x = startX,
-		y = startY,
-		zombie = isZombie,
-		id;
+	var id, 
+		x 				= startX,
+		y 				= startY,
+		zombie			= isZombie ? true : false;
 
 	// Getters and setters
 	var getX = function() {
@@ -28,8 +28,8 @@ var Player = function(startX, startY, isZombie) {
 		return zombie;
 	};
 
-	var setZombie = function(isZombie) {
-		zombie = isZombie;
+	var setZombie = function(zombi) {
+		zombie = zombi;
 	};
 
 	// Future feature

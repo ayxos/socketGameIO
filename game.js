@@ -162,23 +162,12 @@ function onMovePlayer(data) {
 		return;
 	}
 
-	// check collision
-	zombiePlayer = playerById(1);
-	var zombie = data.isZombie;
-	// console.log('data', data.x);
-	// console.log('zombi', zombiePlayer.getX());
-	if( (data.x < zombiePlayer.getX() + 50) &&  (data.x > zombiePlayer.getX() - 50) ){
-		// console.log('peligro');
-		if( (data.y < zombiePlayer.getY() + 50) &&  (data.y > zombiePlayer.getY() - 50) ){
-			console.log('is zombie');
-			zombie = true;
-		}
-	}
+	checkIfZombie(data);
 
 	// Update player position
 	movePlayer.setX(data.x);
 	movePlayer.setY(data.y);
-	movePlayer.setZombie(zombie);
+	movePlayer.setZombie(checkIfZombie(data));
 
 	// Broadcast updated position to connected socket clients, attach to id
 	this.broadcast.emit("move player", {
@@ -189,6 +178,23 @@ function onMovePlayer(data) {
 	});
 };
 
+function checkIfZombie(player) {
+	// check collision
+	var zombie = player.isZombie;
+	// console.log('player', player.x);
+	// console.log('zombi', zombieList[i].getX());
+	var zombieList = getZombiesList();
+	for(var i = 0; i < zombieList.length ; i++){
+		if( (player.x < zombieList[i].getX() + 50) &&  (player.x > zombieList[i].getX() - 50) ){
+			// console.log('peligro');
+			if( (player.y < zombieList[i].getY() + 50) &&  (player.y > zombieList[i].getY() - 50) ){
+				// console.log('is zombie');
+				zombie = true;
+			}
+		}
+	}
+	return zombie;
+};
 
 /**************************************************
 ** GAME HELPER FUNCTIONS
@@ -202,6 +208,18 @@ function playerById(id) {
 	};
 	
 	return false;
+};
+
+// Return Zombies
+function getZombiesList() {
+	var i;
+	var result = [];
+	for (i = 0; i < players.length; i++) {
+		if (players[i].getZombie() == true)
+			result.push(players[i]);
+	};
+	
+	return result;
 };
 
 
