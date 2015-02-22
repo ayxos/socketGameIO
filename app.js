@@ -7,7 +7,8 @@ var app 		= require('express')()
 	express   	= require('express'),
 	util 		= require("util"),					// Utility resources (logging, object inspection, etc)
 	Player 		= require("./Player").Player 	    // Player class
-	log 		= require("color-util-logs");
+	log 		= require("color-util-logs")
+	port		= 8005;
 
 // Static files
 app.use(express.static(__dirname + '/public'));
@@ -239,6 +240,6 @@ app.get('/', function(req, res){
 /**************************************************
 ** SERVER RUNNER
 **************************************************/
-http.listen(3000, function(){
+http.listen(port, function(){
   console.log('listening on *:3000');
 });
