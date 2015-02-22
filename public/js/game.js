@@ -1,4 +1,4 @@
-var myDomain = "http://ayxos.com/zombi";
+var myDomain = "http://ayxos.com/zombi/";
 /**************************************************
 ** GAME VARIABLES
 **************************************************/
