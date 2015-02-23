@@ -31,8 +31,8 @@ function init() {
 	// init zombie
 	initZombie();
 
-	// Set up Socket.IO to listen on port 8000
-	socket = io.listen(8000);
+	// Set up Socket.IO to listen on port 9000
+	socket = io.listen(9000);
 
 	// Start listening for events
 	setEventHandlers();
@@ -99,6 +99,9 @@ function onSocketConnection(client) {
 
 	// Listen for move player message
 	client.on("move player", onMovePlayer);
+
+	// End Game
+	client.on("end", endGame);
 };
 
 // Socket client has disconnected
@@ -197,6 +200,12 @@ function checkIfZombie(player) {
 	return zombie;
 };
 
+// End Game
+function endGame(){
+	// console.log('TheEnd');
+	io.emit("end");
+};
+
 /**************************************************
 ** GAME HELPER FUNCTIONS
 **************************************************/
@@ -241,5 +250,5 @@ app.get('/', function(req, res){
 ** SERVER RUNNER
 **************************************************/
 http.listen(port, function(){
-  console.log('listening on *:3000');
+  console.log('listening on', port);
 });

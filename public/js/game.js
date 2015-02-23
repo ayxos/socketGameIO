@@ -1,4 +1,3 @@
-var myDomain = "http://ayxos.com/zombi/";
 /**************************************************
 ** GAME VARIABLES
 **************************************************/
@@ -7,6 +6,8 @@ var canvas,			// Canvas DOM element
 	keys,			// Keyboard input
 	localPlayer,	// Local player
 	remotePlayers,	// Remote players
+	host 		= location.origin,
+	PORT   		= 8005,
 	socket;			// Socket connection
 
 
@@ -37,7 +38,7 @@ function init() {
 	localPlayer = new Player(startX, startY);
 
 	// Initialise socket connection
-	socket = io.connect(myDomain, {port: 8000, transports: ["websocket"]});
+	socket = io.connect(host, {port: PORT, transports: ["websocket"]});
 
 	// Initialise remote players array
 	remotePlayers = [];
@@ -72,6 +73,9 @@ var setEventHandlers = function() {
 
 	// Player removed message received
 	socket.on("remove player", onRemovePlayer);
+
+	// Player removed message received
+	socket.on("end", endGame);
 };
 
 // Keyboard key down
@@ -156,6 +160,11 @@ function onRemovePlayer(data) {
 	remotePlayers.splice(remotePlayers.indexOf(removePlayer), 1);
 };
 
+// End Game
+function endGame(){
+	console.log('TheEnd');
+};
+
 
 /**************************************************
 ** GAME ANIMATION LOOP
@@ -175,14 +184,22 @@ function animate() {
 function update() {
 	// Update local player and check for change
 	if (localPlayer.update(keys)) {
-
+		// check if is zombie
 		checkIfZombie(localPlayer, localPlayer.getX, localPlayer.getY);
+
 		// Send local player data to the game server
 		socket.emit("move player", {
 			x: localPlayer.getX(), 
 			y: localPlayer.getY(),
 			isZombie: localPlayer.getZombie()
 		});
+
+		// check if game is over
+		if(checkIfEnd() ){
+			console.log('end');
+			socket.emit("end");
+		}
+
 	};
 };
 
@@ -201,6 +218,19 @@ function checkIfZombie(player, Fx, Fy) {
 			}
 		}
 	}
+};
+
+function checkIfEnd() {
+	// get zombie list
+	var result = false;
+	var zombieList = getZombiesList();
+	console.log('zombieList', zombieList.length);
+	console.log('remotePlayers', remotePlayers.length);
+	if(zombieList.length == (remotePlayers.length + 1)){
+		result = true;
+	}
+	console.log('reuslt', result);
+	return result;
 };
 
 
@@ -246,9 +276,12 @@ function getZombiesList() {
 	var i;
 	var result = [];
 	for (i = 0; i < remotePlayers.length; i++) {
-		if (remotePlayers[i].getZombie() == true)
+		if (remotePlayers[i].getZombie() == true){
 			result.push(remotePlayers[i]);
+		}
 	};
-	
+	if(localPlayer.getZombie()){
+		result.push(localPlayer);
+	}
 	return result;
 };
