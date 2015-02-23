@@ -243,5 +243,5 @@ app.get('/', function(req, res){
 ** SERVER RUNNER
 **************************************************/
 http.listen(port, function(){
-  console.log('listening on *:3000');
+  console.log('listening on ', port);
 });
