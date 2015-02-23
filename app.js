@@ -5,6 +5,7 @@ var app 		= require('express')()
 	http 		= require('http').Server(app),
 	io 			= require('socket.io')(http),
 	express   	= require('express'),
+	redis		= require("socket.io-redis"),
 	util 		= require("util"),					// Utility resources (logging, object inspection, etc)
 	Player 		= require("./Player").Player 	    // Player class
 	log 		= require("color-util-logs")
@@ -32,7 +33,8 @@ function init() {
 	initZombie();
 
 	// Set up Socket.IO to listen on port 8000
-	socket = io.listen(8000);
+	// socket = io.listen(8000);
+	socket = io.adapter(redis({ host: 'localhost', port: 6379 }));
 
 	// Start listening for events
 	setEventHandlers();

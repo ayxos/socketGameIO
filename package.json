@@ -5,6 +5,8 @@
   "dependencies": {
     "color-util-logs": "0.0.1",
     "express": "4.10.2",
-    "socket.io": "1.2.0"
+    "socket.io": "1.2.0",
+    "redis": "~0.12.1",
+    "socket.io-redis": "~0.1.4"
   }
 }
