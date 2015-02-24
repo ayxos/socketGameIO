@@ -8,7 +8,7 @@ var app 		= require('express')()
 	util 		= require("util"),					// Utility resources (logging, object inspection, etc)
 	Player 		= require("./Player").Player 	    // Player class
 	log 		= require("color-util-logs")
-	port		= 8005;
+	port		= 8006;
 
 // Static files
 app.use(express.static(__dirname + '/public'));

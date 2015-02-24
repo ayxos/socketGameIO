@@ -6,8 +6,8 @@ var canvas,			// Canvas DOM element
 	keys,			// Keyboard input
 	localPlayer,	// Local player
 	remotePlayers,	// Remote players
-	host 		= location.origin,
-	PORT   		= 8005,
+	host 		= 'http://ayxos.com/socket.io',
+	// PORT   		= 80,
 	socket;			// Socket connection
 
 
@@ -38,7 +38,7 @@ function init() {
 	localPlayer = new Player(startX, startY);
 
 	// Initialise socket connection
-	socket = io.connect(host, {port: PORT, transports: ["websocket"]});
+	socket = io();
 
 	// Initialise remote players array
 	remotePlayers = [];
