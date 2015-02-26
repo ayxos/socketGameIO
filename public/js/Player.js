@@ -7,6 +7,7 @@ var Player = function(startX, startY, isZombie) {
 		y 				= startY,
 		moveAmount 		= 4, // speed!
 		isRight			= true,
+		points 			= 0,
 		zombie			= isZombie ? true : false;
 
 	var prepareImg = function() {
@@ -36,6 +37,14 @@ var Player = function(startX, startY, isZombie) {
 
 	var setZombie = function(zombi) {
 		zombie = zombi;
+	};
+
+	var getPoints = function() {
+		return points;
+	};
+
+	var setPoints = function(extraPoints) {
+		points += extraPoints;
 	};
 
 	// Update player position
@@ -84,6 +93,8 @@ var Player = function(startX, startY, isZombie) {
 		update: 	update,
 		draw: 		draw,
 		getZombie: 	getZombie,
-		setZombie: 	setZombie
+		setZombie: 	setZombie,
+		getPoints:  getPoints,
+		setPoints:  setPoints
 	}
 };

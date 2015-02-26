@@ -6,8 +6,6 @@ var canvas,			// Canvas DOM element
 	keys,			// Keyboard input
 	localPlayer,	// Local player
 	remotePlayers,	// Remote players
-	host 		= 'http://ayxos.com/socket.io',
-	// PORT   		= 80,
 	socket;			// Socket connection
 
 
@@ -141,8 +139,12 @@ function onMovePlayer(data) {
 	// Update player position
 	movePlayer.setX(data.x);
 	movePlayer.setY(data.y);
+	movePlayer.setPoints(data.points);
 	// update zombie checker
-	movePlayer.setZombie(data.isZombie);
+	// movePlayer.setZombie(data.isZombie); // later
+
+	// check if is zombie
+	checkIfZombie(movePlayer, movePlayer.getX, movePlayer.getY);
 
 };
 
@@ -163,6 +165,9 @@ function onRemovePlayer(data) {
 // End Game
 function endGame(){
 	console.log('TheEnd');
+	$('.options').hide();
+	$('.end').show();
+	$('.modal').modal();
 };
 
 
@@ -184,52 +189,75 @@ function animate() {
 function update() {
 	// Update local player and check for change
 	if (localPlayer.update(keys)) {
-		// check if is zombie
-		checkIfZombie(localPlayer, localPlayer.getX, localPlayer.getY);
-
-		// Send local player data to the game server
-		socket.emit("move player", {
-			x: localPlayer.getX(), 
-			y: localPlayer.getY(),
-			isZombie: localPlayer.getZombie()
-		});
-
-		// check if game is over
-		if(checkIfEnd() ){
-			console.log('end');
-			socket.emit("end");
-		}
-
-	};
+		updatePlayers();
+	} else {
+		updatePlayers();
+	}
 };
 
-function checkIfZombie(player, Fx, Fy) {
+function updatePlayers(){
+	// check new zombies
+	checkZombies();
+
+	if(localPlayer.getZombie() === false){
+		// check if is zombie
+		checkIfZombie(localPlayer, localPlayer.getX, localPlayer.getY);
+	}
+
+	// Send local player data to the game server
+	socket.emit("move player", {
+		x: localPlayer.getX(), 
+		y: localPlayer.getY(),
+		isZombie: localPlayer.getZombie(),
+		points: 	localPlayer.getPoints()
+	});
+
+	// check if game is over
+	if(checkIfEnd() ){
+		$('.options').hide();
+		$('.end').show();
+		$('.modal').modal();
+		socket.emit("end");
+	}
+};
+
+function checkIfZombie(player, Fx, Fy) { // only local Player
 	// check collision
 	var zombie = player.getZombie();
 	// get zombie list
 	var zombieList = getZombiesList();
+
+	if(localPlayer.getZombie()){
+		zombieList.push(localPlayer);
+	}
+
 	for(var i = 0; i < zombieList.length ; i++){
 		if( (Fx() < zombieList[i].getX() + 50) &&  (Fx() > zombieList[i].getX() - 50) ){
-			// console.log('peligro');
 			if( (Fy() < zombieList[i].getY() + 50) &&  (Fy() > zombieList[i].getY() - 50) ){
-				// console.log('is zombie');
-				zombie = true;
+				if(player.getZombie() === false && player !== localPlayer && zombieList[i] === localPlayer){
+					localPlayer.setPoints(10);
+				}
 				player.setZombie(true);
 			}
 		}
 	}
 };
 
+function checkZombies(){ // rest of players
+	var humans = getHumansList();
+	for(var i = 0; i < humans.length; i++){
+		// check if is zombie
+		checkIfZombie(humans[i], humans[i].getX, humans[i].getY);
+	};
+};
+
 function checkIfEnd() {
 	// get zombie list
 	var result = false;
 	var zombieList = getZombiesList();
-	console.log('zombieList', zombieList.length);
-	console.log('remotePlayers', remotePlayers.length);
-	if(zombieList.length == (remotePlayers.length + 1)){
+	if((localPlayer.getZombie()) && (zombieList.length == remotePlayers.length)){
 		result = true;
 	}
-	console.log('reuslt', result);
 	return result;
 };
 
@@ -244,7 +272,8 @@ function draw() {
 	//life setters
 	ctx.fillStyle = 'white';
 	ctx.font = "20px Georgia";
-	ctx.fillText("Players: " + (remotePlayers.length + 1),10,50);
+	ctx.fillText("Players: " + (remotePlayers.length + 1),10,40);
+	ctx.fillText("Points: " + (localPlayer.getPoints()),10,70);
 
 	// Draw the local player
 	localPlayer.draw(ctx);
@@ -271,7 +300,7 @@ function playerById(id) {
 	return false;
 };
 
-// Return Zombies
+// Return Zombies (localPlayer not included)
 function getZombiesList() {
 	var i;
 	var result = [];
@@ -280,8 +309,22 @@ function getZombiesList() {
 			result.push(remotePlayers[i]);
 		}
 	};
-	if(localPlayer.getZombie()){
-		result.push(localPlayer);
-	}
 	return result;
+};
+
+// Return Humans (localPlayer not included)
+function getHumansList() {
+	var i;
+	var result = [];
+	for (i = 0; i < remotePlayers.length; i++) {
+		if (remotePlayers[i].getZombie() != true){
+			result.push(remotePlayers[i]);
+		}
+	};
+	return result;
+};
+
+function restartGame() {
+	console.log('restart');
+	location.reload();
 };

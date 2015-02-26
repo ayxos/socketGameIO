@@ -5,6 +5,7 @@ var Player = function(startX, startY, isZombie) {
 	var id, 
 		x 				= startX,
 		y 				= startY,
+		points			= 0,
 		zombie			= isZombie ? true : false;
 
 	// Getters and setters
@@ -32,6 +33,14 @@ var Player = function(startX, startY, isZombie) {
 		zombie = zombi;
 	};
 
+	var getPoints = function() {
+		return points;
+	};
+
+	var setPoints = function(extraPoints) {
+		points += extraPoints;
+	};
+
 	// Future feature
 	// var setColor = function() {
 	// 	return y;
@@ -45,6 +54,8 @@ var Player = function(startX, startY, isZombie) {
 		setY: setY,
 		getZombie: getZombie,
 		setZombie: setZombie,
+		getPoints: getPoints,
+		setPoints: setPoints,
 		id: id
 	}
 };

@@ -81,7 +81,8 @@ var moveZombie = function(){
 		id: movePlayer.id, 
 		x: movePlayer.getX(), 
 		y: movePlayer.getY(),
-		isZombie: movePlayer.getZombie()
+		isZombie: movePlayer.getZombie(),
+		points: movePlayer.getPoints()
 	});
 }; 
 
@@ -136,7 +137,8 @@ function onNewPlayer(data) {
 		id: 	newPlayer.id, 
 		x: 		newPlayer.getX(), 
 		y: 		newPlayer.getY(),
-		isZombie: 	newPlayer.getZombie()
+		isZombie: 	newPlayer.getZombie(),
+		points: newPlayer.getPoints()
 	});
 
 	// Send existing players to the new player
@@ -147,7 +149,8 @@ function onNewPlayer(data) {
 			id: 	existingPlayer.id, 
 			x: 		existingPlayer.getX(), 
 			y: 		existingPlayer.getY(),
-			isZombie: 	existingPlayer.getZombie()
+			isZombie: 	existingPlayer.getZombie(),
+			points: existingPlayer.getPoints()
 		});
 	};
 		
@@ -172,13 +175,15 @@ function onMovePlayer(data) {
 	movePlayer.setX(data.x);
 	movePlayer.setY(data.y);
 	movePlayer.setZombie(checkIfZombie(data));
+	movePlayer.setPoints(data.points);
 
 	// Broadcast updated position to connected socket clients, attach to id
 	this.broadcast.emit("move player", {
 		id: movePlayer.id, 
 		x: movePlayer.getX(), 
 		y: movePlayer.getY(),
-		isZombie: movePlayer.getZombie()
+		isZombie: movePlayer.getZombie(),
+		points: movePlayer.getPoints()
 	});
 };
 
