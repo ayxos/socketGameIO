@@ -6,6 +6,7 @@ var canvas,			// Canvas DOM element
 	keys,			// Keyboard input
 	localPlayer,	// Local player
 	remotePlayers,	// Remote players
+	isfinish,		// check if game has finish
 	socket;			// Socket connection
 
 
@@ -71,6 +72,9 @@ var setEventHandlers = function() {
 
 	// Player removed message received
 	socket.on("remove player", onRemovePlayer);
+
+	// Player removed message received
+	socket.on("new zombie", newZombie);
 
 	// Player removed message received
 	socket.on("end", endGame);
@@ -139,12 +143,12 @@ function onMovePlayer(data) {
 	// Update player position
 	movePlayer.setX(data.x);
 	movePlayer.setY(data.y);
+	movePlayer.setZombie(data.isZombie);
 	movePlayer.setPoints(data.points);
-	// update zombie checker
-	// movePlayer.setZombie(data.isZombie); // later
-
 	// check if is zombie
-	checkIfZombie(movePlayer, movePlayer.getX, movePlayer.getY);
+	if(!data.isZombie){
+		checkIfZombie(movePlayer, movePlayer.getX, movePlayer.getY);
+	}
 
 };
 
@@ -162,12 +166,24 @@ function onRemovePlayer(data) {
 	remotePlayers.splice(remotePlayers.indexOf(removePlayer), 1);
 };
 
+function newZombie(){
+	var Player = playerById(data.id);
+	Player.setZombie(true);
+};
+
 // End Game
-function endGame(){
-	console.log('TheEnd');
-	$('.options').hide();
-	$('.end').show();
-	$('.modal').modal();
+function endGame(data){
+	if(!isfinish){
+		console.log('TheEnd');
+		$('.options').hide();
+		$('.end').show();
+		$('.modal').modal();
+		isfinish = true;
+		// append result
+		for(var i = 0; i < data.length; i++){
+			$('.modal-body').append('<p>' + data[i].name + ' points: ' + data[i].points + ' </p>');
+		}
+	}
 };
 
 
@@ -201,7 +217,10 @@ function updatePlayers(){
 
 	if(localPlayer.getZombie() === false){
 		// check if is zombie
-		checkIfZombie(localPlayer, localPlayer.getX, localPlayer.getY);
+		var amIZombie = checkIfZombie(localPlayer, localPlayer.getX, localPlayer.getY);
+		if(amIZombie){
+			socket.emit("new zombie");
+		}
 	}
 
 	// Send local player data to the game server
@@ -209,19 +228,15 @@ function updatePlayers(){
 		x: localPlayer.getX(), 
 		y: localPlayer.getY(),
 		isZombie: localPlayer.getZombie(),
-		points: 	localPlayer.getPoints()
+		points: localPlayer.getPoints()
 	});
 
 	// check if game is over
-	if(checkIfEnd() ){
-		$('.options').hide();
-		$('.end').show();
-		$('.modal').modal();
-		socket.emit("end");
-	}
+	checkIfEnd();
 };
 
 function checkIfZombie(player, Fx, Fy) { // only local Player
+	var result = false;
 	// check collision
 	var zombie = player.getZombie();
 	// get zombie list
@@ -238,9 +253,13 @@ function checkIfZombie(player, Fx, Fy) { // only local Player
 					localPlayer.setPoints(10);
 				}
 				player.setZombie(true);
+				result = true;
 			}
 		}
 	}
+
+	return result;
+
 };
 
 function checkZombies(){ // rest of players
@@ -253,12 +272,10 @@ function checkZombies(){ // rest of players
 
 function checkIfEnd() {
 	// get zombie list
-	var result = false;
 	var zombieList = getZombiesList();
-	if((localPlayer.getZombie()) && (zombieList.length == remotePlayers.length)){
-		result = true;
+	if((localPlayer.getZombie()) && (zombieList.length == remotePlayers.length) && (!isfinish) ){
+		socket.emit("end");
 	}
-	return result;
 };
 
 
@@ -272,7 +289,8 @@ function draw() {
 	//life setters
 	ctx.fillStyle = 'white';
 	ctx.font = "20px Georgia";
-	ctx.fillText("Players: " + (remotePlayers.length + 1),10,40);
+	// + 1 server zombie -> TO REMOVE, + 1 localplayer 
+	ctx.fillText("Players: " + (remotePlayers.length + 1 - 1),10,40);
 	ctx.fillText("Points: " + (localPlayer.getPoints()),10,70);
 
 	// Draw the local player
