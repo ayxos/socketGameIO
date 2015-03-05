@@ -51,6 +51,9 @@ function init() {
 ** GAME EVENT HANDLERS
 **************************************************/
 var setEventHandlers = function() {
+	// Mouse
+	window.addEventListener("mousedown", onMouseDown, false);
+	window.addEventListener("mouseup", onMouseUp, false);
 	// Keyboard
 	window.addEventListener("keydown", onKeydown, false);
 	window.addEventListener("keyup", onKeyup, false);
@@ -91,6 +94,20 @@ function onKeydown(e) {
 function onKeyup(e) {
 	if (localPlayer) {
 		keys.onKeyUp(e);
+	};
+};
+
+// Mouse down
+function onMouseDown(e) {
+	if (localPlayer) {
+		keys.onMouseDown(e, localPlayer.getX(), localPlayer.getY());
+	};
+};
+
+// Mouse up
+function onMouseUp(e) {
+	if (localPlayer) {
+		keys.onMouseUp();
 	};
 };
 
