@@ -79,9 +79,14 @@ var Player = function(startX, startY, isZombie) {
 	};
 
 	// Draw player
-	var draw = function(ctx) {
-		// console.log('draw');
-		showCharacter(ctx, x, y, getZombie());
+	var draw = function(ctx, isHandy) {
+		if(isHandy){
+			// console.log(isHandy);
+			showCharacter(ctx, isHandy.x, isHandy.y, getZombie());
+		}
+		else{
+			showCharacter(ctx, x, y, getZombie());
+		}
 	};
 
 	// Define which variables and methods can be accessed

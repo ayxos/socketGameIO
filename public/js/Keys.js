@@ -94,6 +94,56 @@ var Keys = function(up, left, right, down) {
 		that.down = false;
 	};
 
+	var onControllerDown = function(e) {
+		var that = this;
+		console.log('coords: ' + x + ' ' + y, e);
+		// giving a safeArea of 100px
+		if(e.dx > 10 && e.dy > 10) {
+			console.log('case NE');
+			that.up = true;
+			that.right = true;
+		}
+		// giving a safeArea of 100px
+		if(e.dx < -10 && e.dy > 10) {
+			console.log('case NW');
+			that.up = true;
+			that.left = true;
+		}
+		// giving a safeArea of 100px
+		if(e.dx < -10 && e.dy < -10) {
+			console.log('case SE');
+			that.down = true;
+			that.left = true;
+		}
+		// giving a safeArea of 100px
+		if(e.dx > 10 && e.dy < -10) {
+			console.log('case SW');
+			that.down = true;
+			that.right = true;
+		}
+		// giving a safeArea of 100px
+		if(e.dx > -10 && e.dx < 10 && e.dy < 0) {
+			console.log('case S');
+			that.down = true;
+		}
+		// giving a safeArea of 100px
+		if(e.dx > -10 && e.dx < 10 && e.dy > 0) {
+			console.log('case N');
+			that.up = true;
+		}
+		// giving a safeArea of 100px
+		if(e.dy > -10 && e.dy < 10 && e.dx > 0) {
+			console.log('case E');
+			that.right = true;
+		}
+		// giving a safeArea of 100px
+		if(e.dy > -10 && e.dy < 10 && e.dx < 0) {
+			console.log('case W');
+			that.left = true;
+		}
+
+	};
+
 	return {
 		up: 		up,
 		left: 		left,
@@ -102,6 +152,8 @@ var Keys = function(up, left, right, down) {
 		onKeyDown: 	onKeyDown,
 		onKeyUp: 	onKeyUp,
 		onMouseDown: onMouseDown,
-		onMouseUp: onMouseUp
+		onMouseUp: onMouseUp,
+		onControllerDown: onControllerDown
 	};
 };
+

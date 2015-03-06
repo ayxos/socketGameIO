@@ -13,11 +13,6 @@
 	
 	<body>
 
-		<!-- Button trigger modal -->
-		<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" style="position:fixed;left: 5px;bottom: 5px;">
-			<span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-		</button>
-
 		<!-- Modal -->
 		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		  <div class="modal-dialog">
@@ -32,13 +27,8 @@
 		       		</div>
 			      	<div class="end" style="display:none;">
 			        	End Game, No humans left...
-			        	Restart?
+			        	Restarting...
 		       		</div>
-		      </div>
-		      <div class="modal-footer">
-		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-		        <button type="button" class="btn btn-primary options">Save</button>
-		        <button type="button" class="btn btn-primary end" style="display:none;" onclick="restartGame()">Restart</button>
 		      </div>
 		    </div>
 		  </div>
@@ -55,7 +45,7 @@
 		<script src="js/Keys.js"></script>
 		<script src="js/Character.js"></script>
 		<script src="js/Player.js"></script>
-		<script src="js/game.js"></script>
+		<script src="js/gameViewer.js"></script>
 		<script>
 			// Initialize the game
 			init();

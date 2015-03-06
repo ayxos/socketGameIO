@@ -5,6 +5,7 @@
   "dependencies": {
     "color-util-logs": "0.0.1",
     "express": "4.10.2",
+    "express-device": "^0.3.11",
     "socket.io": "1.2.0"
   }
 }

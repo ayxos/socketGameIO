@@ -4,6 +4,16 @@ body {
 
 canvas {
 	display: block;
+}
+
+canvas.handy {
+	background: url('./../images/handybg.png');
+	background-attachment: fixed;
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+
+canvas.desktop {
 	background: url('./../images/forest.png');
 	background-attachment: fixed;
 	background-size: cover;

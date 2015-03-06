@@ -7,11 +7,19 @@ var app 		= require('express')()
 	express   	= require('express'),
 	util 		= require("util"),					// Utility resources (logging, object inspection, etc)
 	Player 		= require("./Player").Player 	    // Player class
-	log 		= require("color-util-logs")
+	log 		= require("color-util-logs"),
+	device		= require('express-device'),
 	port		= 8006;
 
-// Static files
-app.use(express.static(__dirname + '/public'));
+
+
+// app.set('view options', { layout: false });
+// app.set('views', __dirname + '/public');
+
+app.use(device.capture());
+device.enableViewRouting(app);
+
+
 
 /**************************************************
 ** GAME VARIABLES
@@ -98,6 +106,9 @@ function onSocketConnection(client) {
 	// Listen for new player message
 	client.on("new player", onNewPlayer);
 
+	// Listen for new player message
+	client.on("new viewer", onNewViewer);
+
 	// Listen for move player message
 	client.on("move player", onMovePlayer);
 
@@ -159,6 +170,22 @@ function onNewPlayer(data) {
 		
 	// Add new player to the players array
 	players.push(newPlayer);
+};
+
+// New viewer has joined
+function onNewViewer(data) {
+	// Send existing players to the new player
+	var i, existingPlayer;
+	for (i = 0; i < players.length; i++) {
+		existingPlayer = players[i];
+		this.emit("new player", {
+			id: 	existingPlayer.id, 
+			x: 		existingPlayer.getX(), 
+			y: 		existingPlayer.getY(),
+			isZombie: 	existingPlayer.getZombie(),
+			points: existingPlayer.getPoints()
+		});
+	};
 };
 
 // Player has moved
@@ -287,8 +314,24 @@ init();
 ** SERVER ROUTES
 **************************************************/
 app.get('/', function(req, res){
-  res.sendFile(__dirname + '/public/index.html');
+	log.warn(req.device);
+	switch(req.device.type){
+		case 'phone':
+			res.sendFile(__dirname + '/public/handy.html');
+			break;
+		default:
+			res.sendFile(__dirname + '/public/index.html');
+			break;
+	}
 });
+
+app.get('/view', function(req, res){
+	log.warn(req.device);
+	res.sendFile(__dirname + '/public/viewer.html');
+});
+
+// Static files
+app.use(express.static(__dirname + '/public'));
 
 /**************************************************
 ** SERVER RUNNER
