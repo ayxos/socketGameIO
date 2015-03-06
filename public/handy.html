@@ -62,28 +62,29 @@
 			animate();
 		</script>
 
-		<script type='text/javascript' src='/external/gamecontroller.js'></script>
+		<script type='text/javascript' src='external/gamecontroller.js'></script>
 		<script type='text/javascript'>
 		    $( function() { // jQuery *not* required - just be to call onload
-				GameController.init( {
-				    left: {
-				        type: 'joystick'
-				    },
-				    right: {
-				        position: {
-				            right: '5%'
-				        },
-				        type: 'buttons',
-				        buttons: [
-				        {
-				            label: 'Fire', fontSize: 13, touchStart: function() {
-				                // do something
-				            }
-				        },
-				        false, false, false
-				        ]
-				    }
-				} );
+				// GameController.init( {
+				//     left: {
+				//         type: 'joystick'
+				//     },
+				//     right: {
+				//         position: {
+				//             right: '5%'
+				//         },
+				//         type: 'buttons',
+				//         buttons: [
+				//         {
+				//             label: 'Fire', fontSize: 13, touchStart: function() {
+				//                 // do something
+				//             }
+				//         },
+				//         false, false, false
+				//         ]
+				//     }
+				// } );
+		    	GameController.init();
 		    } );
 		</script>
 	</body>

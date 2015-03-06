@@ -81,10 +81,18 @@
 						height: '15%',
 						stroke: 2,
 						touchStart: function() {
+							console.log('MOVEIT');
+							// Game
+							onPadDown('up');
+							// lib
 							GameController.simulateKeyEvent( 'press', 38 );
 							GameController.simulateKeyEvent( 'down', 38 );
 						},
 						touchEnd: function() {
+							console.log('MOVEIT');
+							// Game
+							onPadUp('up');
+							// lib
 							GameController.simulateKeyEvent( 'up', 38 );
 						}
 					},
@@ -93,10 +101,18 @@
 						height: '7%',
 						stroke: 2,
 						touchStart: function() {
+							console.log('MOVEIT');
+							// Game
+							onPadDown('left');
+							// lib
 							GameController.simulateKeyEvent( 'press', 37 );
 							GameController.simulateKeyEvent( 'down', 37 );
 						},
 						touchEnd: function() {
+							console.log('MOVEIT');
+							// Game
+							onPadUp('left');
+							// lib
 							GameController.simulateKeyEvent( 'up', 37 );
 						}
 					},
@@ -105,10 +121,18 @@
 						height: '15%',
 						stroke: 2,
 						touchStart: function() {
+							console.log('MOVEIT');
+							// Game
+							onPadDown('down');
+							// lib
 							GameController.simulateKeyEvent( 'press', 40 );
 							GameController.simulateKeyEvent( 'down', 40 );
 						},
 						touchEnd: function() {
+							console.log('MOVEIT');
+							// Game
+							onPadUp('down');
+							// lib
 							GameController.simulateKeyEvent( 'up', 40 );
 						}
 					},
@@ -117,10 +141,18 @@
 						height: '7%',
 						stroke: 2,
 						touchStart: function() {
+							console.log('MOVEIT');
+							// Game
+							onPadDown('right');
+							// lib
 							GameController.simulateKeyEvent( 'press', 39 );
 							GameController.simulateKeyEvent( 'down', 39 );
 						},
 						touchEnd: function() {
+							console.log('MOVEIT');
+							// Game
+							onPadUp('right');
+							// lib
 							GameController.simulateKeyEvent( 'up', 39 );
 						}
 					}
@@ -453,7 +485,8 @@
 	
 			this.canvas.addEventListener( 'touchstart', touchStart, false );
 			
-			var touchEnd = function( e ) {		
+			var touchEnd = function( e ) {
+				console.log('touchend');
 				e.preventDefault();
 			
 				if( window.navigator.msPointerEnabled && e.pointerType == e.MSPOINTER_TYPE_TOUCH )
@@ -589,6 +622,7 @@
 			// Up arrow
 			if( dpad.up !== false )
 			{
+				console.log('uppp');
 				dpad.up.x = posX - this.getPixels( dpad.up.width, 'y' ) / 2;
 				dpad.up.y = posY - ( this.getPixels( dpad.up.height, 'y' ) +  this.getPixels( dpad.left.height, 'y' ) / 2 );
 				dpad.up.direction = 'up';

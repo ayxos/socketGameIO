@@ -94,6 +94,45 @@ var Keys = function(up, left, right, down) {
 		that.down = false;
 	};
 
+	// D-pad
+	var onPadDown = function(direction) {
+		var that = this;
+		switch (direction) {
+			// Controls
+			case 'left': // Left
+				that.left = true;
+				break;
+			case 'up': // Up
+				that.up = true;
+				break;
+			case 'right': // Right
+				that.right = true; // Will take priority over the left key
+				break;
+			case "down": // Down
+				that.down = true;
+				break;
+		};
+	};
+	
+	var onPadUp = function(direction) {
+		var that = this;
+		switch (direction) {
+			case 'left': // Left
+				that.left = false;
+				break;
+			case 'up': // Up
+				that.up = false;
+				break;
+			case 'right': // Right
+				that.right = false;
+				break;
+			case "down": // Down
+				that.down = false;
+				break;
+		};
+	};
+
+	// joystick
 	var onControllerDown = function(e) {
 		var that = this;
 		console.log('coords: ' + x + ' ' + y, e);
@@ -153,6 +192,8 @@ var Keys = function(up, left, right, down) {
 		onKeyUp: 	onKeyUp,
 		onMouseDown: onMouseDown,
 		onMouseUp: onMouseUp,
+		onPadUp: onPadUp,
+		onPadDown: onPadDown,
 		onControllerDown: onControllerDown
 	};
 };

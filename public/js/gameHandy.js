@@ -77,14 +77,28 @@ var setEventHandlers = function() {
 	socket.on("end", endGame);
 };
 
-// Controller down
+// D-pad Controller down
+function onPadDown(direction) {
+	if (localPlayer) {
+		keys.onPadDown(direction);
+	};
+};
+
+// D-pad Controller up
+function onPadUp(direction) {
+	if (localPlayer) {
+		keys.onPadUp(direction);
+	};
+};
+
+// Joystick Controller down
 function onControllerDown(e) {
 	if (localPlayer) {
 		keys.onControllerDown(e);
 	};
 };
 
-// Controller up
+// Joystick Controller up
 function onControllerUp() {
 	if (localPlayer) {
 		keys.onMouseUp();
