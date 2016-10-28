@@ -2,8 +2,14 @@
 ** NODE.JS REQUIREMENTS
 **************************************************/
 var app 		= require('express')()
-	http 		= require('http').Server(app),
-	io 			= require('socket.io')(http),
+	// http 		= require('http').Server(app),
+	http 		= require('http').createServer({
+					key: fs.readFileSync('./cert/key.key'),
+					cert: fs.readFileSync('./cert/cert.crt'),
+					requestCert: false,
+					rejectUnauthorized: false
+				}, app),
+	io 			= require('socket.io')(https),
 	express   	= require('express'),
 	util 		= require("util"),					// Utility resources (logging, object inspection, etc)
 	Player 		= require("./Player").Player 	    // Player class

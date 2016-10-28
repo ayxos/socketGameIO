@@ -51,6 +51,9 @@ function init() {
 ** GAME EVENT HANDLERS
 **************************************************/
 var setEventHandlers = function() {
+	// Touch
+	window.addEventListener("touchstart", onMouseDown, false);
+	window.addEventListener("touchend", onMouseUp, false);
 	// Mouse
 	window.addEventListener("mousedown", onMouseDown, false);
 	window.addEventListener("mouseup", onMouseUp, false);
@@ -99,6 +102,7 @@ function onKeyup(e) {
 
 // Mouse down
 function onMouseDown(e) {
+	e.preventDefault();
 	if (localPlayer) {
 		keys.onMouseDown(e, localPlayer.getX(), localPlayer.getY());
 	};
@@ -106,6 +110,7 @@ function onMouseDown(e) {
 
 // Mouse up
 function onMouseUp(e) {
+	e.preventDefault();
 	if (localPlayer) {
 		keys.onMouseUp();
 	};
