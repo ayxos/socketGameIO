@@ -15,8 +15,8 @@ var app 		= require('express')()
 	Player 		= require("./Player").Player 	    // Player class
 	log 		= require("color-util-logs"),
 	device		= require('express-device'),
-	port		= 8006,
-	socket_port = 8005;
+	port		= process.env.PORT || 8006,
+	socket_port = process.env.PORT + 1 || 8005;
 
 
 
