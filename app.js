@@ -16,7 +16,7 @@ var app 		= require('express')()
 	log 		= require("color-util-logs"),
 	device		= require('express-device'),
 	port		= process.env.PORT || 8006,
-	socket_port = process.env.PORT + 1 || 8005;
+	socket_port = process.env.PORT - 1 || 8005;
 
 
 
