@@ -15,7 +15,8 @@ var app 		= require('express')()
 	Player 		= require("./Player").Player 	    // Player class
 	log 		= require("color-util-logs"),
 	device		= require('express-device'),
-	port		= 8006;
+	port		= 8006,
+	socket_port = 8005;
 
 
 
@@ -46,7 +47,7 @@ function init() {
 	initZombie();
 
 	// Set up Socket.IO to listen on port 9000
-	socket = io.listen(9000);
+	socket = io.listen(socket_port);
 
 	// Start listening for events
 	setEventHandlers();
