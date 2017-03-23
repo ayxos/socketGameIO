@@ -1,8 +1,10 @@
 /**************************************************
 ** GAME PLAYER CLASS
 **************************************************/
-var Player = function(startX, startY, isZombie) {
+var Player = function(startX, startY, isZombie, name) {
+	console.log('new player', isZombie, name);
 	var id,
+		name 			= name,
 		x 				= startX,
 		y 				= startY,
 		moveAmount 		= 4, // speed!
@@ -82,10 +84,10 @@ var Player = function(startX, startY, isZombie) {
 	var draw = function(ctx, isHandy) {
 		if(isHandy){
 			// console.log(isHandy);
-			showCharacter(ctx, isHandy.x, isHandy.y, getZombie());
+			showCharacter(ctx, isHandy.x, isHandy.y, getZombie(), name);
 		}
 		else{
-			showCharacter(ctx, x, y, getZombie());
+			showCharacter(ctx, x, y, getZombie(), name);
 		}
 	};
 

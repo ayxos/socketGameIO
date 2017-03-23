@@ -150,12 +150,13 @@ function onNewPlayer(data) {
 	// console.log('data', data);
 	// console.log('players', players);
 	// Create a new player
-	var newPlayer = new Player(data.x, data.y, data.isZombie);
+	var newPlayer = new Player(data.x, data.y, data.isZombie, data.name);
 	newPlayer.id = this.id;
 
 	// Broadcast new player to connected socket clients
 	this.broadcast.emit("new player", {
 		id: 	newPlayer.id, 
+		name: 	newPlayer.name,
 		x: 		newPlayer.getX(), 
 		y: 		newPlayer.getY(),
 		isZombie: 	newPlayer.getZombie(),
@@ -168,6 +169,7 @@ function onNewPlayer(data) {
 		existingPlayer = players[i];
 		this.emit("new player", {
 			id: 	existingPlayer.id, 
+			name: 	existingPlayer.name,
 			x: 		existingPlayer.getX(), 
 			y: 		existingPlayer.getY(),
 			isZombie: 	existingPlayer.getZombie(),
@@ -186,7 +188,8 @@ function onNewViewer(data) {
 	for (i = 0; i < players.length; i++) {
 		existingPlayer = players[i];
 		this.emit("new player", {
-			id: 	existingPlayer.id, 
+			id: 	existingPlayer.id,
+			name: 	existingPlayer.name, 
 			x: 		existingPlayer.getX(), 
 			y: 		existingPlayer.getY(),
 			isZombie: 	existingPlayer.getZombie(),

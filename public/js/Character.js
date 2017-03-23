@@ -60,7 +60,7 @@ function loadImage(name) {
   images[name].src = "images/" + name + ".png";
 }
 
-function showCharacter(ctx, Cx, Cy, isZombie){
+function showCharacter(ctx, Cx, Cy, isZombie, name){
 
 	drawEllipse(ctx, Cx + 40, Cy + 29, 160 - breathAmt, 6); // Shadow
 
@@ -87,6 +87,11 @@ function showCharacter(ctx, Cx, Cy, isZombie){
 		ctx.drawImage(images["zombie-hair"], Cx - 37, Cy - 138 - breathAmt);
 		ctx.drawImage(images["zombie-rightArm"], Cx - 15, Cy - 42 - breathAmt);
 	}
+	// Name 
+	ctx.font = "20px Comic Sans MS";
+	ctx.fillStyle = "red";
+	ctx.textAlign = "center";
+	ctx.fillText(name, Cx + 10, Cy + 50 - breathAmt);
 
 	drawEllipse(ctx, Cx + 47, Cy - 68 - breathAmt, 8, curEyeHeight); // Left Eye
 	drawEllipse(ctx, Cx + 58, Cy - 68 - breathAmt, 8, curEyeHeight); // Right Eye

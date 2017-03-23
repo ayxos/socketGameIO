@@ -1,8 +1,9 @@
 /**************************************************
 ** GAME PLAYER CLASS
 **************************************************/
-var Player = function(startX, startY, isZombie) {
+var Player = function(startX, startY, isZombie, name) {
 	var id, 
+		name			= name,
 		x 				= startX,
 		y 				= startY,
 		points			= 0,
@@ -56,7 +57,8 @@ var Player = function(startX, startY, isZombie) {
 		setZombie: setZombie,
 		getPoints: getPoints,
 		setPoints: setPoints,
-		id: id
+		id: id,
+		name: name
 	}
 };
 

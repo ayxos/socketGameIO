@@ -4,29 +4,62 @@
 var canvas,			// Canvas DOM element
 	ctx,			// Canvas rendering context
 	keys,			// Keyboard input
+	playerName,     // Player name
 	localPlayer,	// Local player
 	remotePlayers,	// Remote players
 	isfinish,		// check if game has finish
 	socket;			// Socket connection
 
-
 /**************************************************
-** GAME INITIALISATION
+** GAME PRE-SET
 **************************************************/
-function init() {
+var setInitHandlers = function() {
 	// Declare the canvas and rendering context
 	canvas = document.getElementById("gameCanvas");
 	ctx = canvas.getContext("2d");
-
 	// Maximise the canvas
 	// canvas.width = 1024;
 	// canvas.height = 768;
 	canvas.width = window.innerWidth;
 	canvas.height = window.innerHeight;
-
 	// Initialise keyboard controls
 	keys = new Keys();
+	// Initialise socket connection
+	socket = io();
+	// Socket connection successful
+	socket.on("connect", onSocketConnected);
+};
+// Socket connected
+function onSocketConnected() {
+	console.log("Connected to socket server");
+	$('.options').hide();
+	$('.name').show();
+	$('.modal').modal();
+};
 
+function initGame() {
+	$('.modal').modal('hide');
+	$('.options').show();
+	$('.name').hide();
+	playerName = $('#name').val();
+
+	init();
+	animate();
+
+	console.log('new player', playerName);
+	// Send local player data to the game server
+	socket.emit("new player", {
+		x: localPlayer.getX(), 
+		y: localPlayer.getY(),
+		isZombie: localPlayer.getZombie(),
+		name: playerName
+	});
+}
+
+/**************************************************
+** GAME INITIALISATION
+**************************************************/
+function init() {
 	// Calculate a random start position for the local player
 	// The minus 5 (half a player size) stops the player being
 	// placed right on the egde of the screen
@@ -34,10 +67,7 @@ function init() {
 		startY = Math.round(Math.random()*(canvas.height-5));
 
 	// Initialise the local player
-	localPlayer = new Player(startX, startY);
-
-	// Initialise socket connection
-	socket = io();
+	localPlayer = new Player(startX, startY, false, playerName);
 
 	// Initialise remote players array
 	remotePlayers = [];
@@ -63,9 +93,6 @@ var setEventHandlers = function() {
 
 	// Window resize
 	window.addEventListener("resize", onResize, false);
-
-	// Socket connection successful
-	socket.on("connect", onSocketConnected);
 
 	// Socket disconnection
 	socket.on("disconnect", onSocketDisconnect);
@@ -123,18 +150,6 @@ function onResize(e) {
 	canvas.height = window.innerHeight;
 };
 
-// Socket connected
-function onSocketConnected() {
-	console.log("Connected to socket server");
-
-	// Send local player data to the game server
-	socket.emit("new player", {
-		x: localPlayer.getX(), 
-		y: localPlayer.getY(),
-		isZombie: localPlayer.getZombie()
-	});
-};
-
 // Socket disconnected
 function onSocketDisconnect() {
 	console.log("Disconnected from socket server");
@@ -145,7 +160,7 @@ function onNewPlayer(data) {
 	console.log("New player connected:", data.id);
 
 	// Initialise the new player
-	var newPlayer = new Player(data.x, data.y, data.isZombie);
+	var newPlayer = new Player(data.x, data.y, data.isZombie, data.name);
 	newPlayer.id = data.id;
 
 	// Add new player to the remote players array

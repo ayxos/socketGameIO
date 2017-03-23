@@ -33,6 +33,15 @@
 		        <h4 class="modal-title" id="myModalLabel">zombieSocket</h4>
 		      </div>
 		      <div class="modal-body">
+			      	<div class="name" style="display:none;">
+			        	Insert your Name
+						<div class="input-group">
+						  <input id="name" type="text" class="form-control" placeholder="Name">
+						  <span class="input-group-btn">
+						    <button class="btn btn-secondary" type="button" onClick='initGame()'>Go!</button>
+						  </span>
+						</div>
+		       		</div>
 			      	<div class="options">
 					Created by <a href='https://github.com/ayxos'> Ayxos </a>
 		       		</div>
@@ -64,8 +73,7 @@
 		<script src="js/game.js"></script>
 		<script>
 			// Initialize the game
-			init();
-			animate();
+			setInitHandlers();
 		</script>
 	</body>
 </html>
