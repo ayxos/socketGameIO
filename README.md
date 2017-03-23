@@ -1,7 +1,7 @@
 # socketGameIO
 a massive multiplayer game using Javascript &amp; Websockets (socket.io)
 
-project: http://ayxos.com/zombi/
+project: https://zombi.herokuapp.com/
 
 Features:
 
