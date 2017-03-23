@@ -90,7 +90,6 @@ function showCharacter(ctx, Cx, Cy, isZombie, name){
 	// Name 
 	ctx.font = "20px Comic Sans MS";
 	ctx.fillStyle = "red";
-	ctx.textAlign = "center";
 	ctx.fillText(name, Cx + 10, Cy + 50 - breathAmt);
 
 	drawEllipse(ctx, Cx + 47, Cy - 68 - breathAmt, 8, curEyeHeight); // Left Eye
