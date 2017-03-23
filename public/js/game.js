@@ -42,11 +42,10 @@ function initGame() {
 	$('.options').show();
 	$('.name').hide();
 	playerName = $('#name').val();
-
+	$('p#playerName').text('Name: ' + playerName)
+	// init 
 	init();
 	animate();
-
-	console.log('new player', playerName);
 	// Send local player data to the game server
 	socket.emit("new player", {
 		x: localPlayer.getX(), 

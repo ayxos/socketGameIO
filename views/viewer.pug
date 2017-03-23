@@ -1,0 +1,36 @@
+doctype html
+html(lang='en')
+  head
+    title A multiplayer game built using HTML5 canvas and WebSockets
+    meta(charset='utf-8')
+    link(href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css', rel='stylesheet')
+    link(rel='stylesheet', href='style/reset.css')
+    link(rel='stylesheet', href='style/game.css')
+  body
+    // Modal
+    #myModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='myModalLabel', aria-hidden='true')
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button.close(type='button', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') ×
+            h4#myModalLabel.modal-title zombieSocket
+          .modal-body
+            .options
+              | Game options
+            .end(style='display:none;')
+              | End Game, No humans left...
+              | Restarting...
+    canvas#gameCanvas.desktop
+    script(src='https://code.jquery.com/jquery-2.1.3.min.js')
+    script(src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js')
+    script(src='https://cdn.socket.io/socket.io-1.3.4.js')
+    script(src='js/requestAnimationFrame.js')
+    script(src='js/Keys.js')
+    script(src='js/Character.js')
+    script(src='js/Player.js')
+    script(src='js/gameViewer.js')
+    script.
+      // Initialize the game
+      init();
+      animate();

@@ -6,9 +6,10 @@
     "color-util-logs": "0.0.1",
     "express": "4.10.2",
     "express-device": "^0.3.11",
+    "pug": "^2.0.0-beta11",
     "socket.io": "1.2.0"
   },
-  "scripts": { 
-    "start" : "node app.js"
+  "scripts": {
+    "start": "node server/app.js"
   }
 }
