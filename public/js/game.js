@@ -8,6 +8,7 @@ var canvas,			// Canvas DOM element
 	localPlayer,	// Local player
 	remotePlayers,	// Remote players
 	isfinish,		// check if game has finish
+	images 			= {},
 	socket;			// Socket connection
 
 /**************************************************
@@ -62,11 +63,9 @@ function init() {
 	// Calculate a random start position for the local player
 	// The minus 5 (half a player size) stops the player being
 	// placed right on the egde of the screen
-	var startX = Math.round(Math.random()*(canvas.width-5)),
-		startY = Math.round(Math.random()*(canvas.height-5));
 
 	// Initialise the local player
-	localPlayer = new Player(startX, startY, false, playerName);
+	localPlayer = new Player(200, 150, false, playerName);
 
 	// Initialise remote players array
 	remotePlayers = [];
@@ -321,13 +320,19 @@ function checkIfEnd() {
 function draw() {
 	// Wipe the canvas clean
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	var imagesStart = new Image();
+	imagesStart.src = "images/start.png";
+	// Calculate a random start position for the local player
+	// The minus 5 (half a player size) stops the player being
+	// placed right on the egde of the screen
+	ctx.drawImage(imagesStart, 100, 100);
 
 	//life setters
 	ctx.fillStyle = 'white';
 	ctx.font = "20px Georgia";
 	// + 1 server zombie -> TO REMOVE, + 1 localplayer 
-	ctx.fillText("Players: " + (remotePlayers.length + 1 - 1),10,40);
-	ctx.fillText("Points: " + (localPlayer.getPoints()),10,70);
+	ctx.fillText("Players: " + remotePlayers.length, 10, 40);
+	ctx.fillText("Points: " + (localPlayer.getPoints()), 10, 70);
 
 	// Draw the local player
 	localPlayer.draw(ctx);
@@ -365,6 +370,10 @@ function getZombiesList() {
 	};
 	return result;
 };
+
+function getList() {
+	console.log(localPlayer, remotePlayers);
+}
 
 // Return Humans (localPlayer not included)
 function getHumansList() {

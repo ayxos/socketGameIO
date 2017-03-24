@@ -69,7 +69,7 @@ function showCharacter(ctx, Cx, Cy, isZombie, name){
 		// ctx.save();
 		// ctx.rotate(0.5);
 		// if(legsCounter%8 != 0){
-			ctx.drawImage(images["legs"], Cx, Cy);
+		ctx.drawImage(images["legs"], Cx, Cy);
 		// } else {
 		// 	ctx.drawImage(images["legs-jump"], Cx, Cy);
 		// }

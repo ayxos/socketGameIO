@@ -1,7 +1,7 @@
 /**************************************************
 ** NODE.JS REQUIREMENTS
 **************************************************/
-var app 		= require('express')()
+var app 		= require('express')(),
 	http 		= require('http').Server(app),
 	express   	= require('express'),	    // Player class
 	socket_ops  = require("./game/socket_ops").Init,
@@ -9,7 +9,8 @@ var app 		= require('express')()
 	device		= require('express-device'),
 	path		= require('path'),
 	port		= process.env.PORT || 8006,
-	socket_port = process.env.PORT - 1 || 8005;
+	socket_port = process.env.PORT - 1 || 8005,
+	players		= [];	// Array of connected players 
 
 app.use(device.capture());
 device.enableViewRouting(app);
@@ -20,7 +21,7 @@ app.set('view engine', 'pug')
 /**************************************************
 ** RUN THE GAME
 **************************************************/
-socket_ops(socket_port, http);
+socket_ops(socket_port, http, players);
 
 /**************************************************
 ** SERVER ROUTES

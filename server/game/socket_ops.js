@@ -1,7 +1,7 @@
 /**************************************************
 ** GAME INITIALISATION
 **************************************************/
-function init(socket_port, http) {
+function init(socket_port, http, players) {
 
 	/**************************************************
 	** NODE.JS REQUIREMENTS
@@ -21,7 +21,7 @@ function init(socket_port, http) {
 
 	var initZombie = function(){
 		//init zombie
-		var newPlayer = new Player(Math.round(Math.random()*(1024-5)), Math.round(Math.random()*(768-5)), true, 'patient_zero');
+		var newPlayer = new Player(600, 600, true, 'patient_zero');
 		newPlayer.id = 1;
 		// Add new player to the players array
 		players.push(newPlayer);
@@ -269,14 +269,8 @@ function init(socket_port, http) {
 	/**************************************************
 	** GAME VARIABLES
 	**************************************************/
-	var socket,		// Socket controller
-		players;	// Array of connected players
-
+	var socket;		// Socket controller
 	var random = [1, -1];
-
-
-	// Create an empty array to store players
-	players = [];
 
 	// init zombie
 	initZombie();
