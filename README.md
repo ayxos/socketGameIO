@@ -1,4 +1,6 @@
 # socketGameIO
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/ayxos/socketGameIO.svg)](https://greenkeeper.io/)
 a massive multiplayer game using Javascript &amp; Websockets (socket.io)
 
 project: https://zombi.herokuapp.com/
