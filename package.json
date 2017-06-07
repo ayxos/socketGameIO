@@ -4,10 +4,10 @@
   "description": "my first socket.io game",
   "dependencies": {
     "color-util-logs": "0.0.1",
-    "express": "4.10.2",
-    "express-device": "^0.3.11",
+    "express": "4.15.3",
+    "express-device": "^0.4.2",
     "pug": "^2.0.0-beta11",
-    "socket.io": "1.2.0"
+    "socket.io": "2.0.2"
   },
   "scripts": {
     "start": "node server/app.js"
