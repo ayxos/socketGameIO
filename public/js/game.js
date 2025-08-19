@@ -128,7 +128,7 @@ function onKeydown(e) {
 	if (localPlayer) {
 		keys.onKeyDown(e);
 		if (e.keyCode === 32) { // space
-			tryShoot();
+			tryAttack();
 		}
 	};
 };
@@ -389,17 +389,22 @@ function updateBullets(){
 			}
 		}
 	}
+
 }
 
-function tryShoot(){
+function tryAttack(){
 	if (!currentWeapon) { return; }
 	var now = Date.now();
-	if (!currentWeapon.lastShotTs || (now - currentWeapon.lastShotTs) >= currentWeapon.fireRateMs){
+	if (!currentWeapon.lastShotTs || (now - currentWeapon.lastShotTs) >= (currentWeapon.fireRateMs || currentWeapon.cooldownMs)){
 		currentWeapon.lastShotTs = now;
-		var speed = 10;
-		var dir = normalizeVector(lastMoveDir.x, lastMoveDir.y);
-		if (dir.x === 0 && dir.y === 0) { dir = {x:1,y:0}; }
-		bullets.push({ x: localPlayer.getX(), y: localPlayer.getY(), vx: dir.x*speed, vy: dir.y*speed, alive: true });
+		if (currentWeapon.isMelee){
+			performMeleeHit(currentWeapon);
+		} else {
+			var speed = 10;
+			var dir = normalizeVector(lastMoveDir.x, lastMoveDir.y);
+			if (dir.x === 0 && dir.y === 0) { dir = {x:1,y:0}; }
+			bullets.push({ x: localPlayer.getX(), y: localPlayer.getY(), vx: dir.x*speed, vy: dir.y*speed, alive: true });
+		}
 	}
 }
 
@@ -426,7 +431,27 @@ function weaponStats(type){
 		case 'pistol': return { type:'pistol', fireRateMs: 300, lastShotTs: 0 };
 		case 'rifle': return { type:'rifle', fireRateMs: 120, lastShotTs: 0 };
 		case 'shotgun': return { type:'shotgun', fireRateMs: 500, lastShotTs: 0 };
+		case 'knife': return { type:'knife', isMelee: true, range: 38, cooldownMs: 250, lastShotTs: 0 };
+		case 'sword': return { type:'sword', isMelee: true, range: 56, cooldownMs: 350, lastShotTs: 0 };
 		default: return { type:'pistol', fireRateMs: 300, lastShotTs: 0 };
+	}
+}
+
+function performMeleeHit(weapon){
+	var px = localPlayer.getX();
+	var py = localPlayer.getY();
+	var range = weapon.range || 40;
+	for (var j=0;j<remotePlayers.length;j++){
+		var rp = remotePlayers[j];
+		if (rp.getZombie() !== true) { continue; }
+		var dx = rp.getX() - px;
+		var dy = rp.getY() - py;
+		var dist2 = dx*dx + dy*dy;
+		if (dist2 <= range*range){
+			// award points higher for melee
+			var pts = weapon.type === 'sword' ? 15 : 8;
+			localPlayer.setPoints(pts);
+		}
 	}
 }
 
@@ -475,7 +500,7 @@ function generateLevel(){
 	}
 	// Drop weapons
 	var weaponCount = 3 + Math.min(levelNumber, 5);
-	var types = ['pistol','rifle','shotgun'];
+	var types = ['pistol','rifle','shotgun','knife','sword'];
 	for (var j=0;j<weaponCount;j++){
 		var wx = randInt(60, canvas.width-60);
 		var wy = randInt(60, canvas.height-60);
