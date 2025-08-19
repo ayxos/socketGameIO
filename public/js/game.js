@@ -15,6 +15,33 @@ var canvas,			// Canvas DOM element
 	images			= {},
 	socket;			// Socket connection
 
+// Offline/connection fallback state
+var offlineMode = false;
+var serverConnectTimeoutId = null;
+
+function createNoopSocket(){
+	var noop = function(){};
+	return {
+		emit: noop,
+		on: noop,
+		off: noop,
+		removeListener: noop,
+		disconnect: noop,
+		connected: false
+	};
+}
+
+function startOfflineMode(){
+	if (offlineMode) return;
+	offlineMode = true;
+	try { if (serverConnectTimeoutId) { clearTimeout(serverConnectTimeoutId); serverConnectTimeoutId = null; } } catch(e){}
+	try { if (socket && typeof socket.disconnect === 'function') { socket.disconnect(); } } catch(e){}
+	socket = createNoopSocket();
+	// Auto-start local game without waiting for server or modal input
+	try { $('#name').val($('#name').val() || ('Player-' + Math.floor(Math.random()*1000))); } catch(e){}
+	initGame();
+}
+
 // Level state
 var obstacles = []; // array of {x,y,w,h}
 var exitRect = null; // {x,y,w,h}
@@ -39,11 +66,17 @@ var setInitHandlers = function() {
 	socket = (typeof window !== 'undefined' && window.SOCKET_URL) ? io(window.SOCKET_URL) : io();
 	// Socket connection successful
 	socket.on("connect", onSocketConnected);
+	// Detect server not available and fall back to offline/local mode
+	socket.on && socket.on("connect_error", function(){ startOfflineMode(); });
+	socket.on && socket.on("connect_timeout", function(){ startOfflineMode(); });
+	// Additionally, guard with a timeout in case no events fire
+	try { serverConnectTimeoutId = setTimeout(function(){ if (!socket || !socket.connected) { startOfflineMode(); } }, 2500); } catch(e){}
 };
 
 // Socket connected
 function onSocketConnected() {
 	console.log("Connected to socket server");
+	try { if (serverConnectTimeoutId) { clearTimeout(serverConnectTimeoutId); serverConnectTimeoutId = null; } } catch(e){}
 	$('.options').hide();
 	$('.name').show();
 	$('.modal').modal();
