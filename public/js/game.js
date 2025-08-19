@@ -126,8 +126,8 @@ function init() {
 **************************************************/
 var setEventHandlers = function() {
 	// Touch
-	window.addEventListener("touchstart", onMouseDown, false);
-	window.addEventListener("touchend", onMouseUp, false);
+	window.addEventListener("touchstart", onTouchStart, false);
+	window.addEventListener("touchend", onTouchEnd, false);
 	// Mouse
 	window.addEventListener("mousedown", onMouseDown, false);
 	window.addEventListener("mouseup", onMouseUp, false);
@@ -189,6 +189,45 @@ function onMouseUp(e) {
 		keys.onMouseUp();
 	};
 };
+
+// Touch wrappers map to mouse handlers for compatibility
+function onTouchStart(ev){
+    try { if (ev && typeof ev.preventDefault === 'function') ev.preventDefault(); } catch(e){}
+    var touch = (ev && ev.touches && ev.touches[0]) ? ev.touches[0] : ev;
+    // synthesize properties expected by onMouseDown
+    var fakeEvent = { x: touch.clientX || touch.pageX || 0, y: touch.clientY || touch.pageY || 0 };
+    onMouseDown(fakeEvent);
+}
+
+function onTouchEnd(ev){
+    try { if (ev && typeof ev.preventDefault === 'function') ev.preventDefault(); } catch(e){}
+    onMouseUp(ev || {});
+}
+
+// GameController integration for mobile/tablet
+function onPadDown(direction) {
+    if (localPlayer && keys && typeof keys.onPadDown === 'function') {
+        keys.onPadDown(direction);
+    }
+}
+
+function onPadUp(direction) {
+    if (localPlayer && keys && typeof keys.onPadUp === 'function') {
+        keys.onPadUp(direction);
+    }
+}
+
+function onControllerDown(e) {
+    if (localPlayer && keys && typeof keys.onControllerDown === 'function') {
+        keys.onControllerDown(e);
+    }
+}
+
+function onControllerUp() {
+    if (localPlayer && keys && typeof keys.onMouseUp === 'function') {
+        keys.onMouseUp();
+    }
+}
 
 // Browser window resize
 function onResize(e) {

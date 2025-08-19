@@ -61,9 +61,22 @@
     <script src="js/Character.js"></script>
     <script src="js/Player.js"></script>
     <script src="js/game.js"></script>
+    <script src="external/gamecontroller.js"></script>
     <script>
       // Initialize the game
       setInitHandlers();
+      // Enable semi-transparent touch controls on mobile/tablet
+      (function(){
+        var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
+        if (isTouch && window.GameController && typeof window.GameController.init === 'function') {
+          try {
+            window.GameController.init();
+            if (window.GameController.canvas && window.GameController.canvas.style) {
+              window.GameController.canvas.style.opacity = '0.5';
+            }
+          } catch(e) {}
+        }
+      })();
     </script>
   </body>
   </html>
