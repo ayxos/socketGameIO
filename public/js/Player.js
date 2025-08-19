@@ -78,21 +78,17 @@ var Player = function(startX, startY, isZombie, name) {
 		var prevX = x,
 			prevY = y;
 
-		// Up key takes priority over down
-		if (keys.up) {
-			y -= moveAmount;
-		} else if (keys.down) {
-			y += moveAmount;
-		};
-
-		// Left key takes priority over right
-		if (keys.left) {
-			isRight = false;
-			x -= moveAmount;
-		} else if (keys.right) {
-			isRight = true;
-			x += moveAmount;
-		};
+		// Enforce 4-directional movement: choose axis by priority to avoid diagonal
+		// Priority: horizontal if both axes pressed? prefer last direction to feel responsive
+		var moved = false;
+		if (keys.left || keys.right) {
+			if (keys.left && !keys.right) { isRight = false; x -= moveAmount; moved = true; }
+			if (keys.right && !keys.left) { isRight = true; x += moveAmount; moved = true; }
+			// ignore vertical when horizontal is active
+		} else if (keys.up || keys.down) {
+			if (keys.up && !keys.down) { y -= moveAmount; moved = true; }
+			if (keys.down && !keys.up) { y += moveAmount; moved = true; }
+		}
 
 		if(x > window.innerWidth || y > window.innerHeight){
 			x = prevX;

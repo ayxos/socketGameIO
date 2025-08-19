@@ -34,6 +34,7 @@ var blinkTimer = setInterval(updateBlink, blinkUpdateTime);
 var numFramesDrawn = 0;
 var curFPS = 0;
 var legsCounter = 0;
+var characterScale = 0.6; // scale down the character size
 
 function preparePlayer(){
 	
@@ -62,38 +63,41 @@ function loadImage(name) {
 
 function showCharacter(ctx, Cx, Cy, isZombie, name){
 
-	drawEllipse(ctx, Cx + 40, Cy + 29, 160 - breathAmt, 6); // Shadow
+	// Shadow (scaled)
+	drawEllipse(ctx, Cx + 40*characterScale, Cy + 29*characterScale, (160 - breathAmt)*characterScale, 6*characterScale);
+
+	// Helper to draw scaled image at offset
+	function drawScaled(name, ox, oy){
+		var img = images[name];
+		if (!img || !img.width) return; // image not loaded yet
+		var w = img.width * characterScale;
+		var h = img.height * characterScale;
+		ctx.drawImage(img, Cx + ox*characterScale, Cy + oy*characterScale, w, h);
+	}
 
 	if(!isZombie){
-		ctx.drawImage(images["leftArm"], Cx + 40, Cy - 42 - breathAmt);
-		// ctx.save();
-		// ctx.rotate(0.5);
-		// if(legsCounter%8 != 0){
-		ctx.drawImage(images["legs"], Cx, Cy);
-		// } else {
-		// 	ctx.drawImage(images["legs-jump"], Cx, Cy);
-		// }
-		
-		// ctx.restore();
-		ctx.drawImage(images["torso"], Cx, Cy - 50);
-		ctx.drawImage(images["head"], Cx - 10, Cy - 125 - breathAmt);
-		ctx.drawImage(images["hair"], Cx - 37, Cy - 138 - breathAmt);
-		ctx.drawImage(images["rightArm"], Cx - 15, Cy - 42 - breathAmt);
+		drawScaled("leftArm", 40, -42 - breathAmt);
+		drawScaled("legs", 0, 0);
+		drawScaled("torso", 0, -50);
+		drawScaled("head", -10, -125 - breathAmt);
+		drawScaled("hair", -37, -138 - breathAmt);
+		drawScaled("rightArm", -15, -42 - breathAmt);
 	} else {
-		ctx.drawImage(images["zombie-leftArm"], Cx + 40, Cy - 42 - breathAmt);
-		ctx.drawImage(images["zombie-legs"], Cx, Cy);
-		ctx.drawImage(images["zombie-torso"], Cx, Cy - 50);
-		ctx.drawImage(images["zombie-head"], Cx - 10, Cy - 125 - breathAmt);
-		ctx.drawImage(images["zombie-hair"], Cx - 37, Cy - 138 - breathAmt);
-		ctx.drawImage(images["zombie-rightArm"], Cx - 15, Cy - 42 - breathAmt);
+		drawScaled("zombie-leftArm", 40, -42 - breathAmt);
+		drawScaled("zombie-legs", 0, 0);
+		drawScaled("zombie-torso", 0, -50);
+		drawScaled("zombie-head", -10, -125 - breathAmt);
+		drawScaled("zombie-hair", -37, -138 - breathAmt);
+		drawScaled("zombie-rightArm", -15, -42 - breathAmt);
 	}
-	// Name 
-	ctx.font = "20px Comic Sans MS";
+	// Name (scaled)
+	ctx.font = Math.round(20*characterScale) + "px Comic Sans MS";
 	ctx.fillStyle = "red";
-	ctx.fillText(name, Cx + 10, Cy + 50 - breathAmt);
+	ctx.fillText(name, Cx + 10*characterScale, Cy + (50 - breathAmt)*characterScale);
 
-	drawEllipse(ctx, Cx + 47, Cy - 68 - breathAmt, 8, curEyeHeight); // Left Eye
-	drawEllipse(ctx, Cx + 58, Cy - 68 - breathAmt, 8, curEyeHeight); // Right Eye
+	// Eyes (scaled)
+	drawEllipse(ctx, Cx + 47*characterScale, Cy - (68 + breathAmt)*characterScale, 8*characterScale, curEyeHeight*characterScale);
+	drawEllipse(ctx, Cx + 58*characterScale, Cy - (68 + breathAmt)*characterScale, 8*characterScale, curEyeHeight*characterScale);
 
 	// legsCounter++;
 }
