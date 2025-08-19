@@ -56,40 +56,15 @@ var Keys = function(up, left, right, down, space) {
 	var onMouseDown = function(e, x, y) {
 		var that = this;
 		console.log('coords: ' + x + ' ' + y, e);
-		// giving a safeArea of 100px
-		if( (e.x > x + 100 && e.x > x - 100) && (e.y > y + 100 && e.y > y- 100)) {
-			console.log('case 1');
-			that.down = true;
-			that.right = true;
-		}
-		if( (e.x < x + 100 && e.x < x - 100) && (e.y > y + 100 && e.y > y- 100)) {
-			console.log('case 2');
-			that.down = true;
-			that.left = true;
-		}
-		if( (e.x < x + 100 && e.x < x - 100) && (e.y < y + 100 && e.y < y- 100)) {
-			console.log('case 3');
-			that.up = true;
-			that.left = true;
-		}
-		if( (e.x > x + 100 && e.x > x - 100) && (e.y < y + 100 && e.y < y- 100)) {
-			console.log('case 4');
-			that.up = true;
-			that.right = true;
-		}
-		// one way move Y
-		if(e.x < x + 100 && e.x > x - 100 && e.y > y){
-			that.down = true;
-		}
-		if(e.x < x + 100 && e.x > x - 100 && e.y < y){
-			that.up = true;
-		}
-		// one way move X
-		if(e.y < y + 100 && e.y > y - 100 && e.x > x){
-			that.right = true;
-		}
-		if(e.y < y + 100 && e.y > y - 100 && e.x < x){
-			that.left = true;
+		// Reset previous directions
+		that.left = that.right = that.up = that.down = false;
+		// Determine dominant axis and move only along that axis (RPG-style 4-dir)
+		var dx = (e.x - x);
+		var dy = (e.y - y);
+		if (Math.abs(dx) > Math.abs(dy)) {
+			if (dx > 0) { that.right = true; } else { that.left = true; }
+		} else {
+			if (dy > 0) { that.down = true; } else { that.up = true; }
 		}
 	};
 
@@ -142,50 +117,21 @@ var Keys = function(up, left, right, down, space) {
 	// joystick
 	var onControllerDown = function(e) {
 		var that = this;
-		console.log('coords: ' + x + ' ' + y, e);
-		// giving a safeArea of 100px
-		if(e.dx > 10 && e.dy > 10) {
-			console.log('case NE');
-			that.up = true;
-			that.right = true;
-		}
-		// giving a safeArea of 100px
-		if(e.dx < -10 && e.dy > 10) {
-			console.log('case NW');
-			that.up = true;
-			that.left = true;
-		}
-		// giving a safeArea of 100px
-		if(e.dx < -10 && e.dy < -10) {
-			console.log('case SE');
-			that.down = true;
-			that.left = true;
-		}
-		// giving a safeArea of 100px
-		if(e.dx > 10 && e.dy < -10) {
-			console.log('case SW');
-			that.down = true;
-			that.right = true;
-		}
-		// giving a safeArea of 100px
-		if(e.dx > -10 && e.dx < 10 && e.dy < 0) {
-			console.log('case S');
-			that.down = true;
-		}
-		// giving a safeArea of 100px
-		if(e.dx > -10 && e.dx < 10 && e.dy > 0) {
-			console.log('case N');
-			that.up = true;
-		}
-		// giving a safeArea of 100px
-		if(e.dy > -10 && e.dy < 10 && e.dx > 0) {
-			console.log('case E');
-			that.right = true;
-		}
-		// giving a safeArea of 100px
-		if(e.dy > -10 && e.dy < 10 && e.dx < 0) {
-			console.log('case W');
-			that.left = true;
+		// Reset previous directions
+		that.left = that.right = that.up = that.down = false;
+		var threshold = 10;
+		var dx = e.dx || 0;
+		var dy = e.dy || 0; // dy positive means up in our joystick impl
+		if (Math.abs(dx) > Math.abs(dy)) {
+			if (Math.abs(dx) > threshold) {
+				that.right = dx > 0;
+				that.left = dx < 0;
+			}
+		} else {
+			if (Math.abs(dy) > threshold) {
+				that.up = dy > 0;
+				that.down = dy < 0;
+			}
 		}
 
 	};
