@@ -1,5 +1,5 @@
 # socketGameIO
-a massive multiplayer game using Javascript &amp; Websockets (socket.io)
+a massive multiplayer game using Javascript & Websockets (socket.io)
 
 project: https://zombi.herokuapp.com/
 
@@ -24,3 +24,21 @@ The system provides an initial zombie and places one character per player
 
 
 project : http://ayxos.com/zombi/
+
+## Run locally
+
+```
+npm start
+```
+
+Open http://localhost:8006 in a browser.
+
+## GitHub Pages
+
+The client can be hosted on GitHub Pages via the static file at `public/index.html`. It connects to your running socket server. Provide a `server` query parameter to point it at your backend:
+
+```
+https://<your-username>.github.io/<repo-name>/?server=https://your-socket-server.example.com
+```
+
+If omitted, it tries to connect to the same origin.
