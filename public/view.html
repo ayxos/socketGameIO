@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZombiSock - Viewer</title>
+    <link rel="shortcut icon" href="zombie-head.ico">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style/reset.css">
+    <link rel="stylesheet" href="style/game.css">
+  </head>
+  <body>
+    <canvas id="gameCanvas" class="handy"></canvas>
+
+    <script>
+      // Optional: allow specifying socket server via ?server=http://host:port
+      window.SOCKET_URL = new URLSearchParams(window.location.search).get('server') || '';
+    </script>
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
+    <script src="js/requestAnimationFrame.js"></script>
+    <script src="js/Keys.js"></script>
+    <script src="js/Character.js"></script>
+    <script src="js/Player.js"></script>
+    <script src="js/gameViewer.js"></script>
+    <script>
+      init();
+      animate();
+    </script>
+  </body>
+  </html>
+

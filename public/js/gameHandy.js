@@ -36,8 +36,8 @@ function init() {
 	// Initialise the local player
 	localPlayer = new Player(startX, startY);
 
-	// Initialise socket connection
-	socket = io();
+	// Initialise socket connection (optional ?server=http(s)://host:port)
+	socket = (typeof window !== 'undefined' && window.SOCKET_URL) ? io(window.SOCKET_URL) : io();
 
 	// Initialise remote players array
 	remotePlayers = [];
@@ -177,9 +177,10 @@ function onRemovePlayer(data) {
 	remotePlayers.splice(remotePlayers.indexOf(removePlayer), 1);
 };
 
-function newZombie(){
-	var Player = playerById(data.id);
-	Player.setZombie(true);
+function newZombie(data){
+	var id = (data && data.id) ? data.id : data;
+	var Player = playerById(id);
+	if (Player) { Player.setZombie(true); }
 };
 
 // End Game

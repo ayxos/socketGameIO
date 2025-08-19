@@ -206,8 +206,9 @@ function onRemovePlayer(data) {
 	remotePlayers.splice(remotePlayers.indexOf(removePlayer), 1);
 };
 
-function newZombie(){
-	var PlayerInstance = playerById(data.id);
+function newZombie(data){
+	var id = (data && data.id) ? data.id : data;
+	var PlayerInstance = playerById(id);
 	if (PlayerInstance) { PlayerInstance.setZombie(true); }
 };
 

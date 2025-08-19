@@ -3,13 +3,13 @@
 **************************************************/
 var app 		= require('express')(),
 	http 		= require('http').Server(app),
-	express   	= require('express'),	    // Player class
+	express   	= require('express'),
 	socket_ops  = require("./game/socket_ops").Init,
 	log 		= require("color-util-logs"),
 	device		= require('express-device'),
 	path		= require('path'),
 	port		= process.env.PORT || 8006,
-	socket_port = process.env.PORT - 1 || 8005,
+	socket_port = process.env.SOCKET_PORT || (process.env.PORT ? (Number(process.env.PORT) - 1) : 8005),
 	players		= [];	// Array of connected players 
 
 app.use(device.capture());
@@ -27,19 +27,15 @@ socket_ops(socket_port, http, players);
 ** SERVER ROUTES
 **************************************************/
 app.get('/', function(req, res){
-	console.log('device', req.device);
-	switch(req.device.type){
-		case 'phone':
-			res.render('handy', { version: 3 })
-			break;
-		default:
-			res.render('index', { version: 3 })
-			break;
-	}
+	res.sendFile(path.join(process.cwd(), 'public', 'index.html'))
+});
+
+app.get('/handy', function(req, res){
+	res.sendFile(path.join(process.cwd(), 'public', 'handy.html'))
 });
 
 app.get('/view', function(req, res){
-	res.render('viewer', { version: 3 })
+	res.sendFile(path.join(process.cwd(), 'public', 'view.html'))
 });
 
 /**************************************************
