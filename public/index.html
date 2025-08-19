@@ -10,7 +10,35 @@
     <link rel="stylesheet" href="style/game.css">
   </head>
   <body>
-    <canvas id="gameCanvas" class="desktop"></canvas>
+    <div id="splash">
+      <h1 class="logo">ZombiSock</h1>
+      <div class="menu">
+        <button id="btnLocal" class="btn btn-success btn-lg">Start Game (Local)</button>
+        <button id="btnMulti" class="btn btn-primary btn-lg">Multiplayer</button>
+        <button id="btnOptions" class="btn btn-default btn-lg">Options</button>
+      </div>
+      <div id="optionsPanel" style="display:none;margin-top:20px;">
+        <div class="form-group">
+          <label for="optName">Name</label>
+          <input id="optName" type="text" class="form-control" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label for="optSpeed">Speed</label>
+          <input id="optSpeed" type="range" min="2" max="12" value="4" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="optDifficulty">Difficulty</label>
+          <select id="optDifficulty" class="form-control">
+            <option value="easy">Easy</option>
+            <option value="normal" selected>Normal</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
+        <button id="optSave" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+
+    <canvas id="gameCanvas" class="desktop" style="display:none;"></canvas>
 
     <button class="btn btn-primary btn-lg" type="button" data-toggle="modal" data-target="#myModal" style="position:fixed;left: 5px;bottom: 5px;">
       <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
@@ -63,19 +91,84 @@
     <script src="js/game.js"></script>
     <script src="external/gamecontroller.js"></script>
     <script>
-      // Initialize the game
-      setInitHandlers();
-      // Enable semi-transparent touch controls on mobile/tablet
+      // Simple UI state
+      var gamePrefs = {
+        mode: 'offline', // 'offline' or 'online'
+        name: '',
+        speed: 4,
+        difficulty: 'normal'
+      };
+
+      function applyOptions(){
+        try {
+          var n = document.getElementById('optName').value.trim();
+          var s = parseInt(document.getElementById('optSpeed').value, 10) || 4;
+          var d = document.getElementById('optDifficulty').value || 'normal';
+          if (n) { gamePrefs.name = n; }
+          gamePrefs.speed = s;
+          gamePrefs.difficulty = d;
+          localStorage.setItem('zombi_prefs', JSON.stringify(gamePrefs));
+        } catch(e) {}
+      }
+
+      function loadOptions(){
+        try {
+          var raw = localStorage.getItem('zombi_prefs');
+          if (raw){
+            var obj = JSON.parse(raw);
+            gamePrefs = Object.assign(gamePrefs, obj || {});
+          }
+        } catch(e) {}
+        try {
+          document.getElementById('optName').value = gamePrefs.name || '';
+          document.getElementById('optSpeed').value = gamePrefs.speed || 4;
+          document.getElementById('optDifficulty').value = gamePrefs.difficulty || 'normal';
+        } catch(e) {}
+      }
+
+      function startLocal(){
+        gamePrefs.mode = 'offline';
+        applyOptions();
+        window.__FORCE_OFFLINE__ = true;
+        bootGame();
+      }
+      function startMulti(){
+        gamePrefs.mode = 'online';
+        applyOptions();
+        window.__FORCE_OFFLINE__ = false;
+        bootGame();
+      }
+      function bootGame(){
+        document.getElementById('splash').style.display = 'none';
+        document.getElementById('gameCanvas').style.display = 'block';
+        // propagate name into modal input so game uses it
+        try { document.getElementById('name').value = gamePrefs.name || ''; } catch(e){}
+        // initialize
+        setInitHandlers();
+        // touch controls
+        (function(){
+          var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
+          if (isTouch && window.GameController && typeof window.GameController.init === 'function') {
+            try {
+              window.GameController.init();
+              if (window.GameController.canvas && window.GameController.canvas.style) {
+                window.GameController.canvas.style.opacity = '0.5';
+              }
+            } catch(e) {}
+          }
+        })();
+      }
+
+      // Wire buttons
       (function(){
-        var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
-        if (isTouch && window.GameController && typeof window.GameController.init === 'function') {
-          try {
-            window.GameController.init();
-            if (window.GameController.canvas && window.GameController.canvas.style) {
-              window.GameController.canvas.style.opacity = '0.5';
-            }
-          } catch(e) {}
-        }
+        loadOptions();
+        document.getElementById('btnLocal').addEventListener('click', startLocal);
+        document.getElementById('btnMulti').addEventListener('click', startMulti);
+        document.getElementById('btnOptions').addEventListener('click', function(){
+          var p = document.getElementById('optionsPanel');
+          p.style.display = (p.style.display === 'none') ? 'block' : 'none';
+        });
+        document.getElementById('optSave').addEventListener('click', applyOptions);
       })();
     </script>
   </body>
