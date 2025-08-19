@@ -167,6 +167,9 @@ function init(socket_port, http, players) {
 		movePlayer.setY(data.y);
 		movePlayer.setZombie(data.isZombie);
 		movePlayer.setPoints(data.points);
+		if (typeof data.lives !== 'undefined') {
+			movePlayer.lives = data.lives;
+		}
 		// check
 		if(!data.isZombie){
 			checkIfZombie(movePlayer);
@@ -178,7 +181,8 @@ function init(socket_port, http, players) {
 			x: movePlayer.getX(), 
 			y: movePlayer.getY(),
 			isZombie: movePlayer.getZombie(),
-			points: movePlayer.getPoints()
+			points: movePlayer.getPoints(),
+			lives: movePlayer.lives
 		});
 	};
 

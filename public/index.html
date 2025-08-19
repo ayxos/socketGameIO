@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZombiSock</title>
+    <link rel="shortcut icon" href="zombie-head.ico">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style/reset.css">
+    <link rel="stylesheet" href="style/game.css">
+  </head>
+  <body>
+    <canvas id="gameCanvas" class="desktop"></canvas>
+
+    <button class="btn btn-primary btn-lg" type="button" data-toggle="modal" data-target="#myModal" style="position:fixed;left: 5px;bottom: 5px;">
+      <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+    </button>
+
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+            <h4 id="myModalLabel" class="modal-title">zombieSocket</h4>
+          </div>
+          <div class="modal-body">
+            <div class="name" style="display:none;">
+              <div class="input-group">
+                <input id="name" class="form-control" type="text" placeholder=" Type a Name">
+                <span class="input-group-btn">
+                  <button class="btn btn-primary" type="button" onclick="initGame()">Go!</button>
+                </span>
+              </div>
+            </div>
+            <div class="options">
+              <p id="playerName"></p>
+              <p><small>Created by <a href="https://github.com/ayxos" target="_blank" rel="noopener">Ayxos</a></small></p>
+            </div>
+            <div class="end" style="display:none;">
+              End Game, No humans left... Restart?
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-default" type="button" data-dismiss="modal">Close</button>
+            <button class="btn btn-primary options" type="button">Save</button>
+            <button class="btn btn-primary end" type="button" style="display:none;" onclick="restartGame()">Restart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Optional: allow specifying socket server via ?server=http://host:port
+      window.SOCKET_URL = new URLSearchParams(window.location.search).get('server') || '';
+    </script>
+    <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
+    <script src="js/requestAnimationFrame.js"></script>
+    <script src="js/Keys.js"></script>
+    <script src="js/Character.js"></script>
+    <script src="js/Player.js"></script>
+    <script src="js/game.js"></script>
+    <script>
+      // Initialize the game
+      setInitHandlers();
+    </script>
+  </body>
+  </html>
+
