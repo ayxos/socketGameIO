@@ -1,3 +1,4 @@
+
 /**************************************************
 ** GAME VARIABLES
 **************************************************/
@@ -534,45 +535,50 @@ function draw() {
 		ctx.fillRect(o.x, o.y, o.w, o.h);
 	}
 
-	// Exit
+	// Exit (emoji)
 	if (exitRect){
-		ctx.fillStyle = '#2ecc71';
-		ctx.fillRect(exitRect.x, exitRect.y, exitRect.w, exitRect.h);
+		ctx.font = '28px sans-serif';
+		ctx.fillText('🚪', exitRect.x, exitRect.y + 28);
 	}
 
-	// Weapons
+	// Weapons (emoji)
 	for (var w=0; w<weapons.length; w++){
 		var it = weapons[w];
-		switch(it.type){
-			case 'rifle': ctx.fillStyle = '#3498db'; break;
-			case 'shotgun': ctx.fillStyle = '#e67e22'; break;
-			default: ctx.fillStyle = '#f1c40f';
-		}
-		ctx.beginPath();
-		ctx.arc(it.x, it.y, 8, 0, Math.PI*2);
-		ctx.fill();
+		ctx.font = '22px sans-serif';
+		var emoji = '🔫';
+		if (it.type === 'rifle') emoji = '🎯';
+		if (it.type === 'shotgun') emoji = '💥';
+		if (it.type === 'knife') emoji = '🔪';
+		if (it.type === 'sword') emoji = '🗡️';
+		ctx.fillText(emoji, it.x-11, it.y+8);
 	}
 
-	// Bullets
-	ctx.fillStyle = '#ffffff';
+	// Bullets (emoji)
+	ctx.font = '18px sans-serif';
 	for (var b=0;b<bullets.length;b++){
 		var bl = bullets[b];
-		ctx.fillRect(bl.x-2, bl.y-2, 4, 4);
+		ctx.fillText('•', bl.x-3, bl.y+4);
 	}
 
 	// HUD
 	ctx.fillStyle = 'white';
 	ctx.font = "20px Georgia";
-	ctx.fillText("Players: " + remotePlayers.length, 10, 40);
-	ctx.fillText("Points: " + (localPlayer.getPoints()), 10, 70);
+	ctx.fillText("🧑‍🤝‍🧑 Players: " + remotePlayers.length, 10, 40);
+	ctx.fillText("⭐ Points: " + (localPlayer.getPoints()), 10, 70);
 	if (typeof localPlayer.getLives === 'function') {
-		ctx.fillText("Lives: " + localPlayer.getLives(), 10, 100);
+		ctx.fillText("❤️ Lives: " + localPlayer.getLives(), 10, 100);
 	}
 	var remainingMs = Math.max(0, gameDurationMs - (Date.now() - (gameStartTs || Date.now())));
 	var seconds = Math.ceil(remainingMs / 1000);
-	ctx.fillText("Time: " + seconds + 's', 10, 130);
-	ctx.fillText("Level: " + levelNumber, 10, 160);
-	ctx.fillText("Weapon: " + (currentWeapon ? currentWeapon.type : 'none'), 10, 190);
+	ctx.fillText("⏱️ Time: " + seconds + 's', 10, 130);
+	ctx.fillText("🗺️ Level: " + levelNumber, 10, 160);
+	var weaponName = currentWeapon ? currentWeapon.type : 'none';
+	var weaponEmoji = '🔫';
+	if (weaponName === 'rifle') weaponEmoji = '🎯';
+	if (weaponName === 'shotgun') weaponEmoji = '💥';
+	if (weaponName === 'knife') weaponEmoji = '🔪';
+	if (weaponName === 'sword') weaponEmoji = '🗡️';
+	ctx.fillText("⚒️ Weapon: " + weaponEmoji + ' ' + weaponName, 10, 190);
 
 	// Draw the local player
 	localPlayer.draw(ctx);
