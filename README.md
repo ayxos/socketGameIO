@@ -25,13 +25,25 @@ The system provides an initial zombie and places one character per player
 
 project : http://ayxos.com/zombi/
 
-## Run locally
+## Run statically (no Node server)
+
+- Simply open `public/index.html` in a browser, or serve the `public/` folder with any static server.
+- If your socket server is hosted elsewhere, append `?server=` to point the client at it:
+
+```
+public/index.html?server=https://your-socket-server.example.com
+```
+
+- Mobile/handheld layout: `public/handy.html`
+- Viewer-only layout: `public/view.html`
+
+## Run with Node (optional API/socket server)
 
 ```
 npm start
 ```
 
-Open http://localhost:8006 in a browser.
+Open http://localhost:8006 in a browser. Static pages are served from `public/` and sockets listen on `SOCKET_PORT` (default `PORT-1`).
 
 ## GitHub Pages
 
