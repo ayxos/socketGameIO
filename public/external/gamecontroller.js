@@ -588,7 +588,7 @@
 				var posX = this.getPositionX( side );
 				var posY = this.getPositionY( side );
 							
-				buttons[i].x = posX + this.getPixels( buttons[i].offset.x, 'y' );
+				buttons[i].x = posX + this.getPixels( buttons[i].offset.x, 'x' );
 				buttons[i].y = posY + this.getPixels( buttons[i].offset.y, 'y' );
 	
 				this.addButton( buttons[i] );
@@ -623,7 +623,7 @@
 			if( dpad.up !== false )
 			{
 				console.log('uppp');
-				dpad.up.x = posX - this.getPixels( dpad.up.width, 'y' ) / 2;
+				dpad.up.x = posX - this.getPixels( dpad.up.width, 'x' ) / 2;
 				dpad.up.y = posY - ( this.getPixels( dpad.up.height, 'y' ) +  this.getPixels( dpad.left.height, 'y' ) / 2 );
 				dpad.up.direction = 'up';
 				this.addTouchableDirection( dpad.up );
@@ -632,7 +632,7 @@
 			// Left arrow
 			if( dpad.left !== false )
 			{
-				dpad.left.x = posX - ( this.getPixels( dpad.left.width, 'y' ) + this.getPixels( dpad.up.width, 'y' ) / 2 );
+				dpad.left.x = posX - ( this.getPixels( dpad.left.width, 'x' ) + this.getPixels( dpad.up.width, 'x' ) / 2 );
 				dpad.left.y = posY - ( this.getPixels( dpad.left.height, 'y' ) / 2 );
 				dpad.left.direction = 'left';
 				this.addTouchableDirection( dpad.left );
@@ -641,7 +641,7 @@
 			// Down arrow
 			if( dpad.down !== false )
 			{
-				dpad.down.x = posX - this.getPixels( dpad.down.width, 'y' ) / 2;
+				dpad.down.x = posX - this.getPixels( dpad.down.width, 'x' ) / 2;
 				dpad.down.y = posY + ( this.getPixels( dpad.left.height, 'y' ) / 2 );
 				dpad.down.direction = 'down';
 				this.addTouchableDirection( dpad.down );
@@ -650,7 +650,7 @@
 			// Right arrow
 			if( dpad.right !== false )
 			{
-				dpad.right.x = posX + ( this.getPixels( dpad.up.width, 'y' ) / 2 );
+				dpad.right.x = posX + ( this.getPixels( dpad.up.width, 'x' ) / 2 );
 				dpad.right.y = posY - this.getPixels( dpad.right.height, 'y' ) / 2;
 				dpad.right.direction = 'right';
 				this.addTouchableDirection( dpad.right );
@@ -952,8 +952,10 @@
 			{
 				if( i == 'x' )
 					this[i] = GameController.getPixels( options[i], 'x' );
-				else if( i == 'y' || i == 'height' || i == 'width' )
+				else if( i == 'y' || i == 'height' )
 					this[i] = GameController.getPixels( options[i], 'y' );
+				else if( i == 'width' )
+					this[i] = GameController.getPixels( options[i], 'x' );
 				else
 					this[i] = options[i];
 			}
@@ -1043,7 +1045,7 @@
 			{
 				if( i == 'x' )
 					this[i] = GameController.getPixels( options[i], 'x' );
-				else if( i == 'x' || i == 'radius' )
+				else if( i == 'y' || i == 'radius' )
 					this[i] = GameController.getPixels( options[i], 'y' );
 				else
 					this[i] = options[i];
@@ -1278,7 +1280,7 @@
 			{
 				if( i == 'x' )
 					this[i] = GameController.getPixels( options[i], 'x' );
-				else if( i == 'x' || i == 'radius' )
+				else if( i == 'y' || i == 'radius' )
 					this[i] = GameController.getPixels( options[i], 'y' );
 				else
 					this[i] = options[i];
