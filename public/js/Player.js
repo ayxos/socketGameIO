@@ -65,6 +65,13 @@ var Player = function(startX, startY, isZombie, name) {
 		return lives;
 	};
 
+	var setSpeed = function(newSpeed){
+		if (typeof newSpeed === 'number' && newSpeed > 0 && newSpeed < 20){
+			moveAmount = newSpeed;
+		}
+		return moveAmount;
+	};
+
 	// Update player position
 	var update = function(keys) {
 		// Previous position
@@ -121,6 +128,7 @@ var Player = function(startX, startY, isZombie, name) {
 		setPoints:  setPoints,
 		getLives:  getLives,
 		setLives:  setLives,
-		decrementLife: decrementLife
+		decrementLife: decrementLife,
+		setSpeed: setSpeed
 	}
 };

@@ -27,6 +27,32 @@ function init(socket_port, http, players) {
 		players.push(newPlayer);
 	}; 
 
+	// Ensure at least 2x zombies vs humans by auto-spawning bot zombies
+	function ensureZombieRatio() {
+		var totalPlayers = players.length;
+		if (totalPlayers <= 0) return;
+		var zombies = getZombiesList().length;
+		var humans = totalPlayers - zombies;
+		if (humans <= 0) return;
+		var minZombies = humans * 2; // at least twice as many zombies as humans
+		var toSpawn = Math.max(0, minZombies - zombies);
+		for (var i = 0; i < toSpawn; i++) {
+			var bot = new Player(Math.floor(Math.random()*900)+50, Math.floor(Math.random()*600)+50, true, 'z_bot');
+			// Assign a unique negative id for bots to avoid collision with socket ids
+			bot.id = -Date.now() - i;
+			players.push(bot);
+			// Broadcast to all clients so they render the new zombie
+			io.emit("new player", {
+				id: bot.id,
+				name: bot.name,
+				x: bot.getX(),
+				y: bot.getY(),
+				isZombie: bot.getZombie(),
+				points: bot.getPoints()
+			});
+		}
+	}
+
 	var moveZombie = function(){
 		// console.log('movie xom');
 		var movePlayer = playerById(1);
@@ -96,6 +122,9 @@ function init(socket_port, http, players) {
 
 		// Broadcast removed player to connected socket clients
 		io.emit("remove player", {id: this.id});
+
+		// Rebalance zombies if needed
+		try { ensureZombieRatio(); } catch(e) {}
 	};
 
 	// New player has joined
@@ -132,6 +161,9 @@ function init(socket_port, http, players) {
 			
 		// Add new player to the players array
 		players.push(newPlayer);
+
+		// After adding, ensure enough zombies exist
+		try { ensureZombieRatio(); } catch(e) {}
 	};
 
 	// New viewer has joined
